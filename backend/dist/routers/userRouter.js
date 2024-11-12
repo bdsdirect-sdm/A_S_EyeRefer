@@ -17,4 +17,6 @@ router.get('/doc-list', userAuth_1.default, userController_1.getDocList);
 router.get('/patient-list', userAuth_1.default, userController_1.getPatientList);
 router.post('/add-patient', userAuth_1.default, userController_1.addPatient);
 router.post('/add-address', userAuth_1.default, userController_1.addAddress);
+router.put("/update-password", userAuth_1.default, userController_1.updatePassword);
+router.put("/update-profile", userAuth_1.default, userController_1.updateProfile);
 exports.default = router;

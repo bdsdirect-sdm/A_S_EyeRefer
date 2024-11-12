@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addAddress = exports.addPatient = exports.getPatientList = exports.getDocList = exports.getUser = exports.loginUser = exports.verifyUser = exports.registerUser = void 0;
+exports.updateProfile = exports.updatePassword = exports.addAddress = exports.addPatient = exports.getPatientList = exports.getDocList = exports.getUser = exports.loginUser = exports.verifyUser = exports.registerUser = void 0;
 const env_1 = require("../environment/env");
 const Address_1 = __importDefault(require("../models/Address"));
 const Patient_1 = __importDefault(require("../models/Patient"));
@@ -22,6 +22,8 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const sequelize_1 = require("sequelize");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const Security_Key = env_1.Local.SECRET_KEY;
+// const checkPassword = async() => {
+// }
 const otpGenerator = () => {
     return String(Math.round(Math.random() * 10000000000)).slice(0, 6);
 };
@@ -103,7 +105,8 @@ const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { uuid } = req.user;
         const user = yield User_1.default.findOne({ where: { uuid: uuid }, include: Address_1.default });
         if (user) {
-            const referCount = yield Patient_1.default.count({ where: { referedto: uuid } });
+            const referCount = yield Patient_1.default.count({ where: { [sequelize_1.Op.or]: [{ referedby: uuid }, { referedto: uuid }] } });
+            console.log(">>>>>>>>>>", uuid);
             const referCompleted = yield Patient_1.default.count({ where: { referedto: uuid, referalstatus: 1 } });
             let docCount;
             if (user.doctype == 1) {
@@ -154,17 +157,13 @@ const getPatientList = (req, res) => __awaiter(void 0, void 0, void 0, function*
         if (user) {
             let patientList = yield Patient_1.default.findAll({ where: { [sequelize_1.Op.or]: [{ referedby: uuid }, { referedto: uuid }] } });
             if (patientList) {
-                // var newPatientList:any = {};
                 const plist = [];
-                // Fetch related data in parallel for each patient
                 for (const patient of patientList) {
-                    // Fetch referedby and referedto and address in parallel
                     const [referedtoUser, referedbyUser, address] = yield Promise.all([
                         User_1.default.findOne({ where: { uuid: patient.referedto } }),
                         User_1.default.findOne({ where: { uuid: patient.referedby } }),
                         Address_1.default.findOne({ where: { uuid: patient.address } }),
                     ]);
-                    // Prepare the patient data to be added to the response
                     const newPatientList = {
                         uuid: patient.uuid,
                         firstname: patient.firstname,
@@ -180,8 +179,7 @@ const getPatientList = (req, res) => __awaiter(void 0, void 0, void 0, function*
                     };
                     plist.push(newPatientList);
                 }
-                console.log("Data----->", plist);
-                // console.log("P-------->", patientList[0]);
+                console.log("-------->", patientList);
                 res.status(200).json({ "patientList": plist, "message": "Patient List Found" });
             }
             else {
@@ -240,3 +238,54 @@ const addAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.addAddress = addAddress;
+const updatePassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { uuid } = req.user;
+        const user = yield User_1.default.findOne({ where: { uuid: uuid } });
+        if (user) {
+            const { prevPassword, newpassword } = req.body;
+            const isMatch = yield bcrypt_1.default.compare(prevPassword, user.password);
+            if (isMatch) {
+                const updatedPassword = yield user.update({ password: newpassword });
+                if (updatedPassword) {
+                    res.status(200).json({ "message": "Password Updated Successfully" });
+                }
+                else {
+                    res.status(400).json({ "message": "Password not Updated" });
+                }
+            }
+            else {
+                res.status(400).json({ "message": "Current Password is Wrong" });
+            }
+        }
+        else {
+            res.status(401).json({ "message": "You're not authorized" });
+        }
+    }
+    catch (err) {
+        res.status(500).json({ "message": err });
+    }
+});
+exports.updatePassword = updatePassword;
+const updateProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { uuid } = req.user;
+        const user = yield User_1.default.findOne({ where: { uuid: uuid } });
+        if (user) {
+            const updatedUser = yield user.update(req.body);
+            if (updatedUser) {
+                res.status(200).json({ "message": "User Updated Successfully" });
+            }
+            else {
+                res.status(400).json({ "message": "User not Updated" });
+            }
+        }
+        else {
+            res.status(401).json({ "message": "You're not authorized" });
+        }
+    }
+    catch (err) {
+        res.status(500).json({ "message": err });
+    }
+});
+exports.updateProfile = updateProfile;
