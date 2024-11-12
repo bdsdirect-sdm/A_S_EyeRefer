@@ -63,6 +63,8 @@ const UpdateProfile:React.FC = () => {
           Authorization: `Bearer ${token}`
         }
       })
+      toast.success(`${response.data.message}`);
+      navigate("/profile")
     }
     catch(err:any){
       toast.error(`${err.response.data.message}`);
@@ -84,7 +86,7 @@ const UpdateProfile:React.FC = () => {
 
   const updateHandler = (values:any) => {
     console.log("Hello");
-    console.log(values)
+    updateMutation.mutate(values);
   }
 
 

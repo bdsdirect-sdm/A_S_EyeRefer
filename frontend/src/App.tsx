@@ -17,6 +17,8 @@ import Verify from './components/Verify';
 import Login from './components/Login';
 import react from 'react';
 import './App.css';
+import UpdatePatient from './components/UpdatePatient';
+import ViewPatient from './components/ViewPatient';
 
 const  App:react.FC = () => {
 
@@ -76,6 +78,14 @@ const  App:react.FC = () => {
         {
           path: '/edit-profile',
           element: <UpdateProfile />
+        },
+        {
+          path: '/update-patient',
+          element: <UpdatePatient />
+        },
+        {
+          path: '/view-patient',
+          element: <ViewPatient />
         }
       ]
     }

@@ -1,37 +1,29 @@
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { Local } from '../environment/env';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '../api/axiosInstance';
 import * as Yup from 'yup';
+import PatientList from './PatientList';
 
-const AddPatient: React.FC = () => {
+const UpdatePatient:React.FC = () => {
   const navigate = useNavigate();
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
+  const patientUUID = localStorage.getItem('patientId');
 
-  const addPatient = async (data: any) => {
-    console.log("Data for API", data);
-    try {
-      await api.post(`${Local.ADD_PATIENT}`, data, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      toast.success("Patient referred successfully");
-      navigate('/dashboard');
-      return;
-    } catch (err: any) {
-      toast.error(`${err.response?.data?.message || 'Error occurred'}`);
-      return;
+  useEffect(()=>{
+    if(!token || !patientUUID){
+      navigate('/login')
     }
-  };
 
-  useEffect(() => {
-    if (!token) navigate('/login');
-    if (localStorage.getItem("doctype") === '1') navigate('/dashboard');
-  }, [navigate, token]);
+    return ()=>{
+      localStorage.removeItem('patientId');
+      navigate('/patient')
+    }
+  },[])
+
 
   const fetchDocs = async () => {
     try {
@@ -45,75 +37,105 @@ const AddPatient: React.FC = () => {
     }
   };
 
-  const { data: MDList, isLoading, isError, error } = useQuery({
+  const { data: MDList, isLoading:isMDLoading, isError:isMDError, error:MDError } = useQuery({
     queryKey: ["MDList"],
     queryFn: fetchDocs,
   });
 
-  const patientMutate = useMutation({
-    mutationFn: addPatient
-  });
+  const getPatient = async() => {
+    try{
+      const response = await api.get(`${Local.VIEW_PATIENT}/${patientUUID}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      return response.data
+    }
+    catch(err:any){
+      console.log(err.response.data.message);
+      // toast.error(err.response.data.message);
+    }
+  }
+
+  const {data:Patient, isLoading, isError, error} = useQuery({
+    queryKey:["Patient"],
+      queryFn:getPatient
+  })
 
   const validationSchema = Yup.object().shape({
     firstname: Yup.string().required('First Name is required'),
     lastname: Yup.string().required('Last Name is required'),
     disease: Yup.string().required("Disease is required"),
-    referedto: Yup.string().required("Select Doctor"),
-    address: Yup.string().required("Address is required"),
-    referback: Yup.string().required("Please select an option")
-  });
+    referedto: Yup.string().required("Select one"),
+    address: Yup.string().required("Select one"),
+    referback: Yup.string().required("Select one")
+  })
 
-  const referPatientHandler = (values: any) => {
-    patientMutate.mutate(values);
-  };
+  const submitHandler = (values:any) => {
+    console.log("first");
+  }
 
-  if (isLoading) {
+  if(isLoading || isMDLoading){
     return (
-      <div>
+      <>
         <div>Loading...</div>
         <div className="spinner-border text-primary" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
-      </div>
-    );
+      </>
+    )
   }
 
-  if (isError) {
-    return (
-      <div>Error: {error?.message || 'Error loading data'}</div>
-    );
+  if(isError || isMDError){
+    return(
+      <>
+        <div>Error: {error?.message}</div>
+        <div>Error: {MDError?.message}</div>
+      </>
+    )
+  }
+
+  console.log(Patient);
+  console.log(MDList);
+
+  var referback
+  if(Patient.patient.referback)
+  {
+    referback = "1"
+  }
+  else{
+    referback = "0"
   }
 
   return (
     <div>
       <Formik
-        initialValues={{
-          firstname: '',
-          lastname: '',
-          disease: '',
-          referedto: '',
-          address: '',
-          referback: ''
-        }}
-        validationSchema={validationSchema}
-        onSubmit={referPatientHandler}
+      initialValues={{
+        firstname:Patient.patient.firstname,
+        lastname: Patient.patient.lastname,
+        disease: Patient.patient.disease,
+        referedto: Patient.patient.referedto,
+        address: Patient.patient.address,
+        referback: referback
+      }}
+      validationSchema={validationSchema}
+      onSubmit={submitHandler}
       >
-        {({ values }) => (
-          <Form>
-            <div className="form-group">
+        {(values) => (<>
+        <Form>
+          <div className="form-group">
               <label>First Name:</label>
-              <Field type="text" name="firstname" placeholder="Enter First Name" className='form-control' />
+              <Field type="text" name="firstname" className="form-control" />
               <ErrorMessage name="firstname" component="div" className="text-danger" />
             </div>
             <br />
 
             <div className="form-group">
               <label>Last Name:</label>
-              <Field type="text" name="lastname" placeholder="Enter Last Name" className='form-control' />
+              <Field type="text" name="lastname" className="form-control" />
               <ErrorMessage name="lastname" component="div" className="text-danger" />
             </div>
             <br />
-
             <div className="form-group">
               <label>Disease:</label>
               <Field as='select' name='disease' className='form-select'>
@@ -138,11 +160,11 @@ const AddPatient: React.FC = () => {
             </div>
             <br />
 
-            <div className='form-group'>
+            <div className='form-group' onClick={()=>{console.log("Values", values.values)}}>
               <label>Address:</label>
               <Field as='select' name='address' className='form-select'>
                 <option value="" disabled>Choose Address</option>
-                {values.referedto && MDList.docList.find((md: any) => md.uuid === values.referedto)?.Addresses.map((address: any) => (
+                {values.values.referedto && MDList.docList.find((md: any) => md.uuid === values.values.referedto)?.Addresses.map((address: any) => (
                   <option key={address.uuid} value={address.uuid}>{address.street} {address.district} {address.city} {address.state}</option>
                 ))}
               </Field>
@@ -163,13 +185,11 @@ const AddPatient: React.FC = () => {
               </div>
             </div>
             <br />
-
-            <button type='submit' className='btn btn-outline-primary'>Add Referral</button>
-          </Form>
-        )}
+        </Form>
+        </>)}
       </Formik>
     </div>
-  );
-};
+  )
+}
 
-export default AddPatient;
+export default UpdatePatient

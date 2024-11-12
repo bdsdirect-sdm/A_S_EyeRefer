@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { registerUser, loginUser, verifyUser, getUser, getDocList, getPatientList, addPatient, addAddress, updatePassword, updateProfile } from "../controllers/userController";
+import { registerUser, loginUser, verifyUser, getUser, getDocList, 
+    getPatientList, addPatient, addAddress, updatePassword, updateProfile, getPatient, deletePatient, updatePatient} from "../controllers/userController";
 import userAuthMiddleware from "../middlewares/userAuth";
 import signupValidation from "../middlewares/formValidation.ts/signupValidation";
 import loginValidation from "../middlewares/formValidation.ts/loginValidation";
@@ -16,5 +17,8 @@ router.post('/add-patient', userAuthMiddleware, addPatient);
 router.post('/add-address', userAuthMiddleware, addAddress);
 router.put("/update-password", userAuthMiddleware, updatePassword);
 router.put("/update-profile", userAuthMiddleware, updateProfile);
+router.get('/view-patient/:patientId', userAuthMiddleware, getPatient);
+router.put('/update-patient/:patientId', userAuthMiddleware, updatePatient);
+router.delete('/delete-patient/:patientId', userAuthMiddleware, deletePatient);
 
 export default router;

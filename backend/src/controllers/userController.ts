@@ -3,13 +3,17 @@ import Address from "../models/Address";
 import Patient from "../models/Patient";
 import sendOTP from "../utils/mailer";
 import User from "../models/User";
-import e, { Response } from 'express';
+import { Response } from 'express';
 import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
 import bcrypt from 'bcrypt';
 
 const Security_Key:any = Local.SECRET_KEY;
 // const checkPassword = async() => {
+
+// }
+
+// const getLoginedUser = async(req:any) => {
 
 // }
 
@@ -175,7 +179,7 @@ export const getPatientList = async(req:any, res:Response) => {
 
                     plist.push(newPatientList);
                 }
-                console.log("-------->", patientList)
+                // console.log("-------->", patientList)
                 res.status(200).json({"patientList":plist, "message":"Patient List Found"});
             }
             else{
@@ -240,10 +244,12 @@ export const updatePassword = async(req:any, res:Response) => {
         const {uuid} = req.user;
         const user = await User.findOne({where:{uuid:uuid}});
         if(user){
-            const {prevPassword, newpassword} = req.body;
+            const {prevPassword, newPassword} = req.body;
             const isMatch = await bcrypt.compare(prevPassword, user.password);
             if(isMatch){
-                const updatedPassword = await user.update({password:newpassword});
+                console.log("HUHUHUH")
+                const hashedPassword = await bcrypt.hash(newPassword, 10);
+                const updatedPassword = await user.update({password:hashedPassword});
                 if(updatedPassword){
                     res.status(200).json({"message":"Password Updated Successfully"});
                 }
@@ -252,6 +258,7 @@ export const updatePassword = async(req:any, res:Response) => {
                 }
             }
             else{
+                console.log("-------------------")
                 res.status(400).json({"message":"Current Password is Wrong"});   
             }
         }
@@ -268,8 +275,14 @@ export const updateProfile = async(req:any, res:Response) => {
     try{
         const {uuid} = req.user;
         const user = await User.findOne({where:{uuid:uuid}});
+        console.log("\n\nxxxxxxxxx\n\n", req.body);
         if(user){
-            const updatedUser = await user.update(req.body);
+            const updatedUser = await user.update({
+                firstname:req.body.firstname,
+                lastname:req.body.lastname,
+                phone:req.body.phone,
+                dob: req.body.dob
+            });
             if(updatedUser){
                 res.status(200).json({"message":"User Updated Successfully"});
             }
@@ -279,6 +292,104 @@ export const updateProfile = async(req:any, res:Response) => {
         }
         else{
             res.status(401).json({"message":"You're not authorized"});
+        }
+    }
+    catch(err){
+        res.status(500).json({"message":err});
+    }
+}
+
+export const getPatient = async(req:any, res:Response) => {
+    try{
+        // console.log("\n\nparams", req.params);
+        const { patientId } = req.params;
+        const { uuid } = req.user;
+        const user = await User.findByPk(uuid);
+        if(user){
+            // const patient = await Patient.findByPk(patientId, 
+            //     {include:[
+            //         {
+            //             model: User,
+            //             foreignKey: 'referedto'
+            //         },
+            //         {
+            //             model: User,
+            //             foreignKey:'referedby',
+            //         },
+            //         {
+            //             model: Address,
+            //             foreignKey: 'address'
+            //         }
+            //     ]});
+            const patient = await Patient.findByPk(patientId);
+            const refertoUser = await User.findByPk(patient?.referedto);
+            const referbyUser = await User.findByPk(patient?.referedby);
+            const address = await Address.findByPk(patient?.address);
+                // console.log("\n\nPatient------_>", patient, "\n\n")
+            if(patient){
+
+                res.status(200).json({"patient":patient, "message":"Patient Found Successfully", "referto":refertoUser, "referby":referbyUser, "address":address });
+            }
+            else{
+                res.status(404).json({"message":"Patient not Found"});
+            }
+        }
+        else{
+            res.status(400).json({"message":"You're not authorized "})
+        }   
+    }
+    catch(err){
+        res.status(500).json({"message":`${err}`});
+    }
+}
+
+export const updatePatient = async(req:any, res:Response) => {
+    try{
+        const { patientId } = req.params;
+        const { uuid } = req.user;
+        const user = await User.findByPk(uuid);
+        if(user){
+            const patient = await Patient.findByPk(patientId);
+            if(patient){
+                // console.log("\n\n", req.body)
+                const updatedPatient = await patient.update(req.body);
+                if(updatedPatient){
+                    res.status(200).json({"message": "Patient Updated Successfully"});
+                }
+                else{
+                    res.status(400).json({"message": "Patient not Updated"});
+                }
+            }
+            else{
+                res.status(404).json({"message": "Patient not Found"});
+            }
+        }
+        else{
+            res.status(400).json({"message": "You're not authorized "});
+        }
+    }
+    catch(err){
+        res.status(500).json({"message": err});
+    }
+}
+
+export const deletePatient = async(req:any, res:Response) => {
+    try{
+        const { patientId } = req.params;
+        const { uuid } = req.user;
+        const user = await User.findByPk(uuid);
+        if(user){
+            const patient = await Patient.findByPk(patientId);
+            if(patient){
+                await patient.destroy();
+                res.status(200).json({"message": "Patient deleted Successfully"})
+            }
+            else{
+                res.status(404).json({"message": "Patient not Found"});
+            }
+        }
+        else{
+            res.status(400).json({"message": "You're not authorized "});
         }
     }
     catch(err){
