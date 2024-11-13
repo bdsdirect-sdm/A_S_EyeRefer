@@ -1,7 +1,6 @@
 import React from 'react'
 import { Outlet, Link, useNavigate } from 'react-router-dom'
-import logo from '../Assets/title_logo.webp'
-import { queryClient } from '../main'
+import logo from '../Assets/title_logo.webp';
 
 const Header:React.FC = () => {
     const navigate = useNavigate();
@@ -52,7 +51,6 @@ const Header:React.FC = () => {
               {/* <li><hr className="dropdown-divider" /></li> */}
               <li><button type='button' className="dropdown-item" onClick={()=>{
                 localStorage.clear();
-                // queryClient.invalidateQueries();
                 navigate("/login");
                 }} >Logout</button></li>
             </ul>

@@ -16,12 +16,12 @@ const UpdatePatient:React.FC = () => {
     if(!token || !patientUUID){
       navigate('/login');
     }
-
     return ()=>{
       localStorage.removeItem('patientId');
       navigate('/patient');
     }
   },[])
+
 
 
   const fetchDocs = async () => {

@@ -150,9 +150,15 @@ export const getDocList = async(req:any, res:Response) => {
 export const getPatientList = async(req:any, res:Response) => {
     try{
         const {uuid} = req.user;
+        const page = parseInt(req.query.page);
+        const limit = parseInt(req.query.limit);
+        const search = req.query.find;
+        console.log("\n\n----------->", req.query, "\n\n");
+        const offset = limit*(page-1)
         const user = await User.findOne({where:{uuid:uuid}});
         if(user){
-            let patientList:any = await Patient.findAll({where:{[Op.or]:[{referedby:uuid},{referedto:uuid}]}});
+            let patientList:any = await Patient.findAll({where:{[Op.or]:[{referedby:uuid},{referedto:uuid}]}, limit:limit, offset:offset});
+            let totalPatient = await Patient.count({where:{[Op.or]:[{referedby:uuid},{referedto:uuid}]}})
             if(patientList){
                 const plist: any[] = [];
                 
@@ -180,7 +186,7 @@ export const getPatientList = async(req:any, res:Response) => {
                     plist.push(newPatientList);
                 }
                 // console.log("-------->", patientList)
-                res.status(200).json({"patientList":plist, "message":"Patient List Found"});
+                res.status(200).json({"patientList":plist, "totalpatients":totalPatient, "message":"Patient List Found"});
             }
             else{
                 res.status(404).json({"message":"Patient List Not Found"});
