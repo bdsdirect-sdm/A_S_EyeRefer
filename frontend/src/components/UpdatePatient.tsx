@@ -2,11 +2,10 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { Local } from '../environment/env';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import api from '../api/axiosInstance';
 import * as Yup from 'yup';
-import PatientList from './PatientList';
 
 const UpdatePatient:React.FC = () => {
   const navigate = useNavigate();
@@ -15,17 +14,18 @@ const UpdatePatient:React.FC = () => {
 
   useEffect(()=>{
     if(!token || !patientUUID){
-      navigate('/login')
+      navigate('/login');
     }
 
     return ()=>{
       localStorage.removeItem('patientId');
-      navigate('/patient')
+      navigate('/patient');
     }
   },[])
 
 
   const fetchDocs = async () => {
+
     try {
       const response = await api.get(`${Local.GET_DOC_LIST}`, {
         headers: { Authorization: `Bearer ${token}` }
@@ -42,6 +42,7 @@ const UpdatePatient:React.FC = () => {
     queryFn: fetchDocs,
   });
 
+  
   const getPatient = async() => {
     try{
       const response = await api.get(`${Local.VIEW_PATIENT}/${patientUUID}`, {
@@ -57,10 +58,10 @@ const UpdatePatient:React.FC = () => {
     }
   }
 
-  const {data:Patient, isLoading, isError, error} = useQuery({
+  const {data:Patient, isLoading, isError, error } = useQuery({
     queryKey:["Patient"],
-      queryFn:getPatient
-  })
+      queryFn:getPatient,
+  });
 
   const validationSchema = Yup.object().shape({
     firstname: Yup.string().required('First Name is required'),
@@ -71,8 +72,29 @@ const UpdatePatient:React.FC = () => {
     referback: Yup.string().required("Select one")
   })
 
+
+  const updatePatient = async(data:any) => {
+    try{
+      await api.put(`${Local.EDIT_PATIENT}/${patientUUID}`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      toast.success("Patient updated successfully");
+      navigate("/patient");
+      return;
+    }
+    catch(err:any){
+      toast.error(err.response.data.message);
+    }
+  }
+
+  const updateMutation = useMutation({
+    mutationFn: updatePatient
+  })
+
   const submitHandler = (values:any) => {
-    console.log("first");
+    updateMutation.mutate(values);
   }
 
   if(isLoading || isMDLoading){
@@ -120,8 +142,10 @@ const UpdatePatient:React.FC = () => {
       }}
       validationSchema={validationSchema}
       onSubmit={submitHandler}
+      enableReinitialize
+
       >
-        {(values) => (<>
+        {({values}) => (<>
         <Form>
           <div className="form-group">
               <label>First Name:</label>
@@ -160,11 +184,11 @@ const UpdatePatient:React.FC = () => {
             </div>
             <br />
 
-            <div className='form-group' onClick={()=>{console.log("Values", values.values)}}>
+            <div className='form-group' onClick={()=>{console.log("Values", values)}}>
               <label>Address:</label>
               <Field as='select' name='address' className='form-select'>
                 <option value="" disabled>Choose Address</option>
-                {values.values.referedto && MDList.docList.find((md: any) => md.uuid === values.values.referedto)?.Addresses.map((address: any) => (
+                {values.referedto && MDList.docList.find((md: any) => md.uuid === values.referedto)?.Addresses.map((address: any) => (
                   <option key={address.uuid} value={address.uuid}>{address.street} {address.district} {address.city} {address.state}</option>
                 ))}
               </Field>
@@ -185,6 +209,8 @@ const UpdatePatient:React.FC = () => {
               </div>
             </div>
             <br />
+
+            <button type="submit" className='btn btn-outline-dark px-5'>Update</button>
         </Form>
         </>)}
       </Formik>

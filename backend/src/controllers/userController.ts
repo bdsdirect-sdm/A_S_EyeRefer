@@ -351,7 +351,7 @@ export const updatePatient = async(req:any, res:Response) => {
         if(user){
             const patient = await Patient.findByPk(patientId);
             if(patient){
-                // console.log("\n\n", req.body)
+                console.log("\n\n", req.body)
                 const updatedPatient = await patient.update(req.body);
                 if(updatedPatient){
                     res.status(200).json({"message": "Patient Updated Successfully"});

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Outlet, Link, useNavigate } from 'react-router-dom'
 import logo from '../Assets/title_logo.webp'
+import { queryClient } from '../main'
 
 const Header:React.FC = () => {
     const navigate = useNavigate();
@@ -8,28 +9,7 @@ const Header:React.FC = () => {
     const doctype:any = localStorage.getItem("doctype");
   return (
     <>
-        {/* <nav className="navbar navbar-expand-lg w-100 bg-body-secondary">
-            <div className="container-fluid">
-                <a className="navbar-brand" href="#">Navbar</a>
-                <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-                <span className="navbar-toggler-icon"></span>
-                </button>
-                <div className="collapse navbar-collapse" id="navbarNavDropdown">
-                <ul className="navbar-nav">
-                    <li className="nav-item">
-                        <Link to="/" className="nav-link active" >Signup</Link>
-                    </li>
-                    <li className="nav-item">
-                        <Link to="/login" className="nav-link active" >Login</Link>
-                    </li>
-                    <li className="nav-item">
-                        <Link to="/verify" className="nav-link active" >Verify</Link>
-                    </li>
-                    
-                </ul>
-                </div>
-            </div>
-        </nav> */}
+
         <header className="p-3 text-bg-secondary">
     <div className="container">
       <div className="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
@@ -72,6 +52,7 @@ const Header:React.FC = () => {
               {/* <li><hr className="dropdown-divider" /></li> */}
               <li><button type='button' className="dropdown-item" onClick={()=>{
                 localStorage.clear();
+                // queryClient.invalidateQueries();
                 navigate("/login");
                 }} >Logout</button></li>
             </ul>

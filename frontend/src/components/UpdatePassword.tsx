@@ -25,6 +25,7 @@ const UpdatePassword:React.FC = () => {
         }
       })
       toast.success(`${resposne.data.message}`);
+      navigate("/profile")
     }
     catch(err:any){
       toast.error(`${err.response.data.message}`);
