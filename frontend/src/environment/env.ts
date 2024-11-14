@@ -13,6 +13,7 @@ interface config{
     DELETE_PATIENT: string;
     EDIT_PATIENT: string;
     VIEW_PATIENT: string;
+    EDIT_ADDRESS: string
 }
 
 export const Local:config = {
@@ -29,5 +30,6 @@ export const Local:config = {
     EDIT_PROFILE: import.meta.env.VITE_EDIT_PROFILE,
     DELETE_PATIENT: import.meta.env.VITE_DELETE_PATIENT,
     EDIT_PATIENT: import.meta.env.VITE_EDIT_PATIENT,
-    VIEW_PATIENT: import.meta.env.VITE_VIEW_PATIENT
+    VIEW_PATIENT: import.meta.env.VITE_VIEW_PATIENT,
+    EDIT_ADDRESS: import.meta.env.VITE_EDIT_ADDRESS
 }

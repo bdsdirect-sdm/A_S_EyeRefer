@@ -19,6 +19,7 @@ import react from 'react';
 import './App.css';
 import UpdatePatient from './components/UpdatePatient';
 import ViewPatient from './components/ViewPatient';
+import UpdateAddress from './components/UpdateAddress';
 
 const  App:react.FC = () => {
 
@@ -86,6 +87,10 @@ const  App:react.FC = () => {
         {
           path: '/view-patient',
           element: <ViewPatient />
+        },
+        {
+          path: 'edit-address',
+          element: <UpdateAddress />
         }
       ]
     }

@@ -12,6 +12,7 @@ const PatientList:React.FC = () => {
   const doctype = localStorage.getItem("doctype");
   const [page, setPage] = useState<number>(1);
   const [search, setSearch] = useState('');
+  const [Input, setInput] = useState('');
   let totalPages;
 
   useEffect(()=>{
@@ -48,15 +49,15 @@ const PatientList:React.FC = () => {
     }
   }
 
-  const fetchPatient = async(pageno:any) => {
+  const fetchPatient = async(pageno:any, search:any) => {
     try{
-      console.log("111")
-      const response = await api.get(`${Local.GET_PATIENT_LIST}?page=${pageno}&limit=10`, {
+      const response = await api.get(`${Local.GET_PATIENT_LIST}?page=${pageno}&limit=10&find=${search}`, {
         headers:{
           Authorization: `Bearer ${token}`
         }
       })
       // console.log("Listing------------------------------------------------>", response.data)
+      setInput('');
       return response.data;
     }
     catch(err){
@@ -65,9 +66,8 @@ const PatientList:React.FC = () => {
   }
  
   const { data: Patients, error, isLoading, isError } = useQuery({
-    queryKey: ['patient', page],
-    queryFn: ()=>fetchPatient(page)
-
+    queryKey: ['patient', page, search],
+    queryFn: ()=>fetchPatient(page, search)
   })
 
   if(isLoading){
@@ -86,13 +86,28 @@ const PatientList:React.FC = () => {
       <div className='text-danger' >Error: {error.message}</div>
       </>
       )}
-      console.log(search);
+  console.log(search);
+  // console.log(Input);
   console.log("Patient-List------------>", Patients);
   totalPages = Math.ceil(Patients?.totalpatients/10);
   return (
     <>
 
         <br />
+        <div className='d-flex' >
+
+          <input className='form-control w-25 border border-dark mx-3 mb-5' type="search" name="find" value={Input} onChange={(e:any)=>{setInput(e.target.value)}} />
+          <button className='btn btn-outline-dark mb-5' type="submit" 
+          onClick={(e:any)=>{
+            setSearch(Input);
+            setPage(1);
+            e.preventDefault();
+          }}
+          >Search</button>
+          </div>
+          <hr />
+
+          
     <table className="table">
   <thead>
     <tr>
@@ -166,6 +181,8 @@ const PatientList:React.FC = () => {
     ))}
   </tbody>
 </table>
+
+
 <button className='btn btn-outline-dark mx-3' onClick={()=>{setPage((prev)=>prev-1)
 }} disabled={page==1?true:false} ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-chevron-compact-left" viewBox="0 0 16 16">
   <path fill-rule="evenodd" d="M9.224 1.553a.5.5 0 0 1 .223.67L6.56 8l2.888 5.776a.5.5 0 1 1-.894.448l-3-6a.5.5 0 0 1 0-.448l3-6a.5.5 0 0 1 .67-.223"/>

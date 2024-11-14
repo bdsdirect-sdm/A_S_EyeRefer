@@ -30,7 +30,6 @@ const UpdatePatient:React.FC = () => {
       const response = await api.get(`${Local.GET_DOC_LIST}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      console.log("Data---->", response.data);
       return response.data;
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Error fetching doctor list');

@@ -4,6 +4,19 @@ import api from '../api/axiosInstance';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+interface Address{
+  uuid: string;
+  street: string;
+  city: string;
+  createAt: Date;
+  district: string;
+  phone: string;
+  pincode: number;
+  state: string;
+  updatedAt: Date;
+  user: string;
+}
+
 const Profile: React.FC = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -91,7 +104,7 @@ const Profile: React.FC = () => {
       <div>
         <h2>Address</h2>
         {User.user.Addresses.length > 0 ? (
-          User.user.Addresses.map((address: any, index: number) => (
+          User.user.Addresses.map((address: Address, index: number) => (
             <>
             <div key={index} className="card mb-3">
               <div className="card-body">
@@ -101,6 +114,12 @@ const Profile: React.FC = () => {
                 <p><strong>Street:</strong> {address.street}</p>
                 <p><strong>Office Phone:</strong> {address.phone}</p>
                 <p><strong>PinCode:</strong> {address.pincode}</p>
+              <button type="button" className='text-end btn btn-outline-dark px-5' onClick={
+                ()=>{
+                  localStorage.setItem("address", JSON.stringify(address));
+                  navigate("/edit-address")
+                }
+              } >Edit</button>
               </div>
             </div>
             </>

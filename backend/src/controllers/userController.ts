@@ -101,7 +101,6 @@ export const getUser = async (req:any, res:Response) => {
         const user = await User.findOne({where:{uuid:uuid}, include:Address});
         if(user){
             const referCount = await Patient.count({where:{[Op.or]:[{referedby:uuid}, {referedto:uuid}]}});
-            console.log(">>>>>>>>>>", uuid);
             const referCompleted = await Patient.count({where:{ referedto:uuid, referalstatus:1 }});
             let docCount;
 
@@ -122,30 +121,87 @@ export const getUser = async (req:any, res:Response) => {
     }
 }
 
-export const getDocList = async(req:any, res:Response) => {
+export const getDocList = async(req:any, res:Response) => { 
     try{
-        console.log("11111111111111");
         const {uuid} = req.user;
-        const user = await User.findOne({where:{uuid:uuid}})
+        const user = await User.findOne({where:{uuid:uuid}});
         let docList;
-        if(user?.doctype==1){
-            docList = await User.findAll({ where: { uuid: {[Op.ne]: uuid} }, include:Address });
-        }
-        else{
-            docList = await User.findAll({ where: { doctype:1, uuid: {[Op.ne]: uuid} }, include:Address });
-        }
-        if(docList){
-            res.status(200).json({"docList":docList, "message":"Docs List Found"});
-        }
-        else{
-            res.status(404).json({"message":"MD List Not Found"});
-        }
-    }
-    catch(err){
-        res.status(500).json({"message":`${err}`});
-    }
 
-}
+        if(req.query.page){
+            const page = parseInt(req.query.page);
+            const limit = parseInt(req.query.limit);
+            const search = req.query.find;
+            const offset = limit*(page-1)
+            
+            if(user?.doctype==1){
+                docList = await User.findAndCountAll({ 
+                    where: {
+                        [Op.and]:[
+                            {
+                                [Op.or]:[
+                                    {firstname: {[Op.like]: `%${search}%`}},
+                                    {lastname:{[Op.like]: `%${search}%`}}]
+                                },
+                                {
+                                    uuid: {
+                                        [Op.ne]:uuid
+                                    }
+                                }
+                            ]
+                        }, 
+                    limit:limit, 
+                    offset:offset 
+                });
+            }
+            else{
+                docList = await User.findAndCountAll({ 
+                    where: {
+                        [Op.and]:[
+                            {
+                                [Op.or]:[
+                                    {firstname: {[Op.like]: `%${search}%`}},
+                                    {lastname:{[Op.like]: `%${search}%`}}]
+                                },
+                                {
+                                    uuid: {
+                                        [Op.ne]:uuid
+                                    }
+                                },
+                                {
+                                    doctype:1
+                                }
+                            ]
+                        }, 
+                    limit:limit, 
+                    offset:offset 
+                });
+            }
+            if(docList){
+                res.status(200).json({"docList":docList.rows, "totaldocs": docList.count, "message":"Docs List Found"});
+            }
+            else{
+                res.status(404).json({"message":"MD List Not Found"});
+            }
+        } else {
+            if(user?.doctype==1){
+                docList = await User.findAll({ where: { uuid: {[Op.ne]: uuid} }, include:Address });
+            }
+            else{
+                docList = await User.findAll({ where: { doctype:1, uuid: {[Op.ne]: uuid} }, include:Address });
+            }
+            
+            if(docList){
+                res.status(200).json({"docList":docList, "message":"Docs List Found"});
+            }
+            else{
+                res.status(404).json({"message":"MD List Not Found"});
+            }
+        }
+        }
+        catch(err){
+            res.status(500).json({"message":`${err}`});
+        }   
+    }
 
 export const getPatientList = async(req:any, res:Response) => {
     try{
@@ -153,16 +209,33 @@ export const getPatientList = async(req:any, res:Response) => {
         const page = parseInt(req.query.page);
         const limit = parseInt(req.query.limit);
         const search = req.query.find;
-        console.log("\n\n----------->", req.query, "\n\n");
         const offset = limit*(page-1)
         const user = await User.findOne({where:{uuid:uuid}});
         if(user){
-            let patientList:any = await Patient.findAll({where:{[Op.or]:[{referedby:uuid},{referedto:uuid}]}, limit:limit, offset:offset});
-            let totalPatient = await Patient.count({where:{[Op.or]:[{referedby:uuid},{referedto:uuid}]}})
+            const patientList:any = await Patient.findAndCountAll({
+                where:{
+                    [Op.and]:[
+                        {
+                            [Op.or]:[
+                                {firstname: {[Op.like]: `%${search}%`}},
+                                {lastname:{[Op.like]: `%${search}%`}}]
+                            },
+                            {
+                                [Op.or]:[
+                                    {referedby:uuid},
+                                    {referedto:uuid}
+                                ]
+                            }
+                        ]
+                    },
+                limit:limit,
+                offset:offset
+                });
+
             if(patientList){
                 const plist: any[] = [];
                 
-                for (const patient of patientList) {
+                for (const patient of patientList.rows) {
                     const [referedtoUser, referedbyUser, address] = await Promise.all([
                         User.findOne({ where: { uuid: patient.referedto } }),
                         User.findOne({ where: { uuid: patient.referedby } }),
@@ -185,8 +258,7 @@ export const getPatientList = async(req:any, res:Response) => {
 
                     plist.push(newPatientList);
                 }
-                // console.log("-------->", patientList)
-                res.status(200).json({"patientList":plist, "totalpatients":totalPatient, "message":"Patient List Found"});
+                res.status(200).json({"patientList":plist, "totalpatients":patientList.count, "message":"Patient List Found"});
             }
             else{
                 res.status(404).json({"message":"Patient List Not Found"});
@@ -253,7 +325,6 @@ export const updatePassword = async(req:any, res:Response) => {
             const {prevPassword, newPassword} = req.body;
             const isMatch = await bcrypt.compare(prevPassword, user.password);
             if(isMatch){
-                console.log("HUHUHUH")
                 const hashedPassword = await bcrypt.hash(newPassword, 10);
                 const updatedPassword = await user.update({password:hashedPassword});
                 if(updatedPassword){
@@ -264,7 +335,6 @@ export const updatePassword = async(req:any, res:Response) => {
                 }
             }
             else{
-                console.log("-------------------")
                 res.status(400).json({"message":"Current Password is Wrong"});   
             }
         }
@@ -281,7 +351,6 @@ export const updateProfile = async(req:any, res:Response) => {
     try{
         const {uuid} = req.user;
         const user = await User.findOne({where:{uuid:uuid}});
-        console.log("\n\nxxxxxxxxx\n\n", req.body);
         if(user){
             const updatedUser = await user.update({
                 firstname:req.body.firstname,
@@ -307,31 +376,16 @@ export const updateProfile = async(req:any, res:Response) => {
 
 export const getPatient = async(req:any, res:Response) => {
     try{
-        // console.log("\n\nparams", req.params);
         const { patientId } = req.params;
         const { uuid } = req.user;
         const user = await User.findByPk(uuid);
         if(user){
-            // const patient = await Patient.findByPk(patientId, 
-            //     {include:[
-            //         {
-            //             model: User,
-            //             foreignKey: 'referedto'
-            //         },
-            //         {
-            //             model: User,
-            //             foreignKey:'referedby',
-            //         },
-            //         {
-            //             model: Address,
-            //             foreignKey: 'address'
-            //         }
-            //     ]});
+
             const patient = await Patient.findByPk(patientId);
             const refertoUser = await User.findByPk(patient?.referedto);
             const referbyUser = await User.findByPk(patient?.referedby);
             const address = await Address.findByPk(patient?.address);
-                // console.log("\n\nPatient------_>", patient, "\n\n")
+
             if(patient){
 
                 res.status(200).json({"patient":patient, "message":"Patient Found Successfully", "referto":refertoUser, "referby":referbyUser, "address":address });
@@ -357,7 +411,7 @@ export const updatePatient = async(req:any, res:Response) => {
         if(user){
             const patient = await Patient.findByPk(patientId);
             if(patient){
-                console.log("\n\n", req.body)
+                
                 const updatedPatient = await patient.update(req.body);
                 if(updatedPatient){
                     res.status(200).json({"message": "Patient Updated Successfully"});
@@ -400,5 +454,31 @@ export const deletePatient = async(req:any, res:Response) => {
     }
     catch(err){
         res.status(500).json({"message":err});
+    }
+}
+
+export const updateAddress = async (req:any, res:Response) => {
+    try{
+        const { addressId } = req.params;
+        const { uuid } = req.user;
+        const user = await User.findByPk(uuid);
+        if(user){
+            const address = await Address.findByPk(addressId);
+            if(address){
+                const updatedAddress = await address.update(req.body);
+                if(updatedAddress){
+                    res.status(200).json({"message": "Address Updated Successfully"});
+                } else {
+                    res.status(400).json({"message": "Failed to update address"});
+                }
+            } else {
+                res.status(404).json({"message": "Address not Found"});
+            }
+        } else {
+            res.status(400).json({"message": "You're not authorized"});
+        }
+    }
+    catch(err){
+        res.status(500).json({"message": err});
     }
 }
