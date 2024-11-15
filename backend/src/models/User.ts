@@ -14,6 +14,9 @@ class User extends Model{
     public doctype!: number;  // '1' for MD & '2' for OD
     public email!: string;
     public password!: string;
+    // public totalrefered!: number;
+    // public totalreferalreceive!: number;
+    // public totalreferalcompleted!: number;
     public is_verified!: boolean;
     public is_deleted!: boolean;
     public deleted_at!: Date;

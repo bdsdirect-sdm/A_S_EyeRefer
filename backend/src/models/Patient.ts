@@ -8,12 +8,14 @@ class Patient extends Model{
     public uuid!: number;
     public firstname!: string;
     public lastname!: string;
+    // public email!: string;
     public disease!: string;
     public referedby!: string;
     public referedto!: string;
     public referalstatus!: boolean;
     public referback!: boolean
     public address!: string;
+    // public isseen!: boolean; 0: pending, 1: scheduled
 }
 
 Patient.init({

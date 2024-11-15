@@ -1,6 +1,12 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import UpdateAppointment from './components/UpdateAppointment';
+import AppointmentList from './components/AppointmentList';
+import AddAppointment from './components/AddAppointment';
 import UpdatePassword from './components/UpdatePassword';
+import UpdateAddress from './components/UpdateAddress';
 import UpdateProfile from './components/UpdateProfile';
+import UpdatePatient from './components/UpdatePatient';
+import ViewPatient from './components/ViewPatient';
 import PatientList from './components/PatientList';
 import AddPatient from './components/AddPatient';
 import DoctorList from './components/DoctorList';
@@ -15,11 +21,9 @@ import Signup from './components/Signup';
 import Header from './components/Header';
 import Verify from './components/Verify';
 import Login from './components/Login';
+import Chat from './components/Chat';
 import react from 'react';
 import './App.css';
-import UpdatePatient from './components/UpdatePatient';
-import ViewPatient from './components/ViewPatient';
-import UpdateAddress from './components/UpdateAddress';
 
 const  App:react.FC = () => {
 
@@ -89,9 +93,25 @@ const  App:react.FC = () => {
           element: <ViewPatient />
         },
         {
-          path: 'edit-address',
+          path: '/edit-address',
           element: <UpdateAddress />
-        }
+        },
+        {
+          path: '/appointment',
+          element: < AppointmentList />
+        },
+        {
+          path: '/add-appointment',
+          element: < AddAppointment />
+        },
+        {
+          path: '/edit-appointment',
+          element: < UpdateAppointment />
+        },
+        {
+          path: '/chat',
+          element: < Chat />
+        },
       ]
     }
   ]

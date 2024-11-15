@@ -6,9 +6,9 @@ import React, { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import api from '../api/axiosInstance';
 import * as Yup from 'yup';
-const token = localStorage.getItem('token');
 
 const AddAddress:React.FC = () => {
+  const token = localStorage.getItem('token');
   const navigate = useNavigate();
 
   useEffect(()=>{

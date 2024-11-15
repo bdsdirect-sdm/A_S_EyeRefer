@@ -20,7 +20,7 @@ const AddPatient: React.FC = () => {
         }
       });
       toast.success("Patient referred successfully");
-      navigate('/dashboard');
+      // navigate('/dashboard');
       return;
     } catch (err: any) {
       toast.error(`${err.response?.data?.message || 'Error occurred'}`);
