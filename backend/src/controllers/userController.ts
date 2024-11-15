@@ -255,7 +255,6 @@ export const getPatientList = async(req:any, res:Response) => {
                         referedby: referedbyUser,
                         address: address,
                     };
-
                     plist.push(newPatientList);
                 }
                 res.status(200).json({"patientList":plist, "totalpatients":patientList.count, "message":"Patient List Found"});
