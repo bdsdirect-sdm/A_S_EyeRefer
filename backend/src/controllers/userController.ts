@@ -1,6 +1,7 @@
 import { Local } from "../environment/env";
 import Address from "../models/Address";
 import Patient from "../models/Patient";
+import Appointment from "../models/Appointment";
 import sendOTP from "../utils/mailer";
 import User from "../models/User";
 import { Response } from 'express';
@@ -205,13 +206,17 @@ export const getDocList = async(req:any, res:Response) => {
 export const getPatientList = async(req:any, res:Response) => {
     try{
         const {uuid} = req.user;
-        const page = parseInt(req.query.page);
-        const limit = parseInt(req.query.limit);
-        const search = req.query.find;
-        const offset = limit*(page-1)
         const user = await User.findOne({where:{uuid:uuid}});
-        if(user){
-            const patientList:any = await Patient.findAndCountAll({
+        var plist: any[] = [];
+
+        if( req.query.page ){
+
+            const page = parseInt(req.query.page);
+            const limit = parseInt(req.query.limit);
+            const search = req.query.find;
+            const offset = limit*(page-1)
+            if(user){
+                const patientList:any = await Patient.findAndCountAll({
                 where:{
                     [Op.and]:[
                         {
@@ -227,43 +232,72 @@ export const getPatientList = async(req:any, res:Response) => {
                             }
                         ]
                     },
-                limit:limit,
-                offset:offset
+                    limit:limit,
+                    offset:offset
                 });
 
-            if(patientList){
-                const plist: any[] = [];
-                
-                for (const patient of patientList.rows) {
-                    const [referedtoUser, referedbyUser, address] = await Promise.all([
+                if(patientList){
+                    
+                    for (const patient of patientList.rows) {
+                        const [referedtoUser, referedbyUser, address] = await Promise.all([
                         User.findOne({ where: { uuid: patient.referedto } }),
                         User.findOne({ where: { uuid: patient.referedby } }),
                         Address.findOne({ where: { uuid: patient.address } }),
                     ]);
 
-                    const newPatientList: any = {
-                        uuid: patient.uuid,
-                        firstname: patient.firstname,
-                        lastname: patient.lastname,
-                        disease: patient.disease,
-                        referalstatus: patient.referalstatus,
-                        referback: patient.referback,
-                        createdAt: patient.createdAt,
-                        updatedAt: patient.updatedAt,
-                        referedto: referedtoUser,
-                        referedby: referedbyUser,
-                        address: address,
-                    };
-                    plist.push(newPatientList);
+                        const newPatientList: any = {
+                            uuid: patient.uuid,
+                            firstname: patient.firstname,
+                            lastname: patient.lastname,
+                            disease: patient.disease,
+                            referalstatus: patient.referalstatus,
+                            referback: patient.referback,
+                            createdAt: patient.createdAt,
+                            updatedAt: patient.updatedAt,
+                            referedto: referedtoUser,
+                            referedby: referedbyUser,
+                            address: address,
+                        };
+                        plist.push(newPatientList);
+                    }
+                    res.status(200).json({"patientList":plist, "totalpatients":patientList.count, "message":"Patient List Found"});
                 }
-                res.status(200).json({"patientList":plist, "totalpatients":patientList.count, "message":"Patient List Found"});
+                else{
+                    res.status(404).json({"message":"Patient List Not Found"});
+                }
             }
             else{
-                res.status(404).json({"message":"Patient List Not Found"});
+                res.status(404).json({"message":"User Not Found"});
             }
-        }
-        else{
-            res.status(404).json({"message":"User Not Found"});
+        } 
+        else {
+        //     const plist = await Patient.findAll({ where: {
+        //         [Op.or]: 
+        //         [
+        //             {referedby:uuid},
+        //             {referedto:uuid},
+        //         ]
+        //     }
+        // });
+            const plist = await Patient.findAll({ where: {
+                [Op.or]: 
+                [
+                    {referedby:uuid},
+                    {referedto:uuid},
+                ]
+            },
+            include:[{
+                model:Appointment,
+                as: "patientId"
+            }]
+        });
+        // let patientList = piilist.filter((item:any)=>(item.patientId.uuid!=))
+        let patientList = plist.filter((item)=>{
+            if(!item.patientId){
+                return item
+            }
+        })
+        res.status(200).json({"patientList":patientList, "message": "Patient List Found"});
         }
     }
     catch(err){
@@ -474,6 +508,128 @@ export const updateAddress = async (req:any, res:Response) => {
             }
         } else {
             res.status(400).json({"message": "You're not authorized"});
+        }
+    }
+    catch(err){
+        res.status(500).json({"message": err});
+    }
+}
+
+export const deleteAddress = async(req:any, res:Response) => {
+    try{
+        const {addressId} = req.params;
+        const {uuid} = req.user;
+        const user = await User.findByPk(uuid);
+        if(user){
+            const address = await Address.findByPk(addressId);
+            if(address){
+                await address?.destroy();
+            } else {
+                res.status(200).json({"message": "Address deleted Successfully"})
+            }
+        } else {
+            res.status(400).json({"message": "you're not authorised"});
+        }
+    }
+    catch(err){
+        res.status(500).json({"message":err});
+    }
+}
+
+export const getAppointmentList = async(req:any, res:Response) => {
+    try{
+        const {uuid} = req.user;
+        const user = await User.findByPk(uuid);
+        const appointments = await Appointment.findAll({where:{ doctor: uuid }, include:[
+            {model: Patient, as: 'patientId'},
+            {model: User, as: 'appointedby'},
+        ]});
+        if(appointments){
+            res.status(200).json({"appointments":appointments, "message": "Appointment List"});
+        } else {
+            res.status(404).json({"message": "No Appointments Found"});
+        }
+
+    }
+    catch(err){
+        res.status(500).json({"message":err});
+    }
+}
+
+export const addAppointment = async(req:any, res:Response) => {
+    try{
+        const {uuid} = req.user;
+        const user = await User.findByPk(uuid);
+        if(user){
+            const { type, appointmentdate, patient } = req.body;
+            const appointment = await Appointment.create({
+                type:type,
+                date: appointmentdate,
+                patient: patient,
+                doctor: uuid
+            });
+            if(appointment){
+                res.status(200).json({"message": "Appointment made Successfully"});
+            } else {
+                res.status(400).json({"message": "Appointment not set"});
+            }
+        } else{
+            res.status(401).json({"message":"you're not Authorised"});
+        }
+    }
+    catch(err){
+        res.status(500).json({"message": err});
+    }
+}
+
+export const updateAppointment = async(req:any, res:Response) => {
+    try{
+        const {appointmentId} = req.params;
+        const {uuid} = req.user;
+        const user = await User.findByPk(uuid);
+        if(user){
+            const appointment = await Appointment.findByPk(appointmentId);
+            if(appointment){
+                
+                const updatedAppointment = await appointment.update(req.body);
+                if(updatedAppointment){
+                    res.status(200).json({"message": "Appointment Updated Successfully"});
+                }
+                else{
+                    res.status(400).json({"message": "Appointment not Updated"});
+                }
+            }
+            else{
+                res.status(404).json({"message": "Appointment not Found"});
+            }
+        }
+        else{
+            res.status(400).json({"message": "You're not authorized "});
+        }
+
+    }
+    catch(err){
+        res.status(500).json({"message": err});
+    }
+}
+
+export const deleteAppointment = async(req:any, res:Response) => {
+    try{
+        const { appointmentId } = req.params;
+        const { uuid } = req.user;
+        const user = await User.findByPk(uuid);
+        if(user){
+            const appointment = await Appointment.findByPk(appointmentId);
+            if(appointment){
+                await appointment.destroy();
+                res.status(200).json({"message": "Appointment deleted Successfully"})
+            }
+            else{
+                res.status(404).json({"message": "Appointment not Found"});
+            }
+        }
+        else{
+            res.status(400).json({"message": "You're not authorized "});
         }
     }
     catch(err){

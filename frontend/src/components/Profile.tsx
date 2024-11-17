@@ -3,6 +3,8 @@ import { Local } from '../environment/env';
 import api from '../api/axiosInstance';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { queryClient } from '../main';
+import { toast } from 'react-toastify';
 
 interface Address{
   uuid: string;
@@ -26,6 +28,22 @@ const Profile: React.FC = () => {
       navigate("/login");
     }
   }, []);
+
+  const deleteHandler = async (addressId:any) => {
+    try{
+      const response = await api.delete(`${Local.DELETE_ADDRESS}/${addressId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      queryClient.invalidateQueries({ queryKey:["dashboard"] });
+      toast.success(response.data.message);
+      return
+    }
+    catch(err:any){
+      toast.error(err.response.data.message);
+    }
+  }
 
   const getUser = async () => {
     try {
@@ -114,12 +132,17 @@ const Profile: React.FC = () => {
                 <p><strong>Street:</strong> {address.street}</p>
                 <p><strong>Office Phone:</strong> {address.phone}</p>
                 <p><strong>PinCode:</strong> {address.pincode}</p>
-              <button type="button" className='text-end btn btn-outline-dark px-5' onClick={
+              <button type="button" className='text-end btn btn-outline-primary px-5 mx-5' onClick={
                 ()=>{
                   localStorage.setItem("address", JSON.stringify(address));
                   navigate("/edit-address")
                 }
               } >Edit</button>
+              <button type="button" className='text-end btn btn-outline-danger px-5' onClick={
+                ()=>{
+                  deleteHandler(address.uuid);
+                }
+              } >Delete</button>
               </div>
             </div>
             </>

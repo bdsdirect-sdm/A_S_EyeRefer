@@ -6,12 +6,9 @@ import { v4 as UUIDV4 } from "uuid";
 
 class Appointment extends Model {
     public uuid!: string;
-    public patientname!: string;
-    public date!: DateOnlyDataType;
-    public type!: number; // 1: Surgery, 2: Other
+    public type!: number; // 1: Surgery, 2: consultation
     public status!: number // 1: Scheduled, 2: Cancelled, 3: Complete
-    public consultdate!: DateOnlyDataType;
-    public surgerydate!: DateOnlyDataType;
+    public date!: DateOnlyDataType;
     public patientId!: string;
     public appointedby!: string;
 }
@@ -23,15 +20,6 @@ Appointment.init({
         primaryKey: true,
         allowNull: false
     },
-    patientname:{
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    date:{
-        type: DataTypes.DATEONLY,
-        allowNull: false,
-        defaultValue: DataTypes.NOW
-    },
     type:{
         type: DataTypes.INTEGER,
         allowNull: false
@@ -41,21 +29,19 @@ Appointment.init({
         allowNull: false,
         defaultValue: 1
     },
-    consultdate:{
+    date:{
         type: DataTypes.DATEONLY,
-        allowNull: true,
-    },
-    surgerydate:{
-        type: DataTypes.DATEONLY,
-        allowNull: true,
+        allowNull: false,
     },
 },{
     modelName: 'Appointment',
     sequelize
 })
 
-Patient.hasOne(Appointment, { foreignKey: 'patientId', as: 'patientId', onDelete: "CASCADE", onUpdate: "CASCADE" });
-Appointment.belongsTo(Patient, { foreignKey: 'patientId', as: 'patientId', onDelete: "CASCADE", onUpdate: "CASCADE" });
+Patient.hasOne(Appointment, { foreignKey: 'patient', as: 'patientId', onDelete: "CASCADE", onUpdate: "CASCADE" });
+Appointment.belongsTo(Patient, { foreignKey: 'patient', as: 'patientId', onDelete: "CASCADE", onUpdate: "CASCADE" });
 
-User.hasOne(Appointment, { foreignKey: "appointedby", as: "appointedby", onDelete: "CASCADE", onUpdate: "CASCADE" });
-Appointment.hasOne(User, { foreignKey: "appointedby", as: "appointedby", onDelete: "CASCADE", onUpdate: "CASCADE" });
+User.hasOne(Appointment, { foreignKey: "doctor", as: "appointedby", onDelete: "CASCADE", onUpdate: "CASCADE" });
+Appointment.hasOne(User, { foreignKey: "doctor", as: "appointedby", onDelete: "CASCADE", onUpdate: "CASCADE" });
+
+export default Appointment;
