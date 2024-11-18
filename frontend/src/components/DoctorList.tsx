@@ -76,22 +76,24 @@ const DoctorList:React.FC = () => {
     <table className="table">
   <thead>
     <tr>
-      <th scope="col">#</th>
       <th scope="col"> Name </th>
       <th scope="col"> email </th>
       <th scope="col"> Doctor Type </th>
     </tr>
   </thead>
   <tbody>
-    {Doctors.docList.map((doctor:any,index:number) =>(
+    {Doctors.docList.map((doctor:any) =>(
       <>
-      <tr key={index} >
-        <td className='fw-bold' > {index+1} </td>
-        <td>{doctor.firstname} {doctor.lastname}</td>
-        <td> {doctor.email} </td>
-        <td> {doctor.doctype==1 && ("MD")} {doctor.doctype==2 && ("OD")} </td>
+      {doctor && (
+        <>
+          <tr key={doctor.uuid} >
+            <td>{doctor.firstname} {doctor.lastname}</td>
+            <td> {doctor.email} </td>
+            <td> {doctor.doctype==1 && ("MD")} {doctor.doctype==2 && ("OD")} </td>
 
-      </tr>
+          </tr>
+        </>
+      )}
       </>
     ))}
   </tbody>

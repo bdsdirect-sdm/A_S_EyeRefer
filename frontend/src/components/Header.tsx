@@ -29,7 +29,7 @@ const Header:React.FC = () => {
           )}
           <li><Link to="/doctor" className="nav-link px-2 text-white">Doctors</Link></li>   {/* List of MDs  */}
           <li><Link to="/chat" className="nav-link px-2 text-white">Chat</Link></li>  {/* Chat with MDs */}
-          <li><Link to="/staff" className="nav-link px-2 text-white">Staff</Link></li>   {/* Staff Members  */}
+          {/* <li><Link to="/staff" className="nav-link px-2 text-white">Staff</Link></li> */}   {/* Staff Members  */}
           {(doctype == 2)&&(
             <>
               <li><Link to="/add-patient" className="nav-link px-2 text-white">Add Referral Patient</Link></li>   {/* Staff Members  */}

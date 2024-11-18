@@ -13,7 +13,7 @@ class Patient extends Model{
     public referedby!: string;
     public referedto!: string;
     public referalstatus!: boolean;
-    public referback!: boolean
+    public referback!: boolean;
     public patientId!: string
     public address!: string;
     public isseen!: boolean; // 0: pending, 1: scheduled
@@ -34,11 +34,11 @@ Patient.init({
         type: DataTypes.STRING,
         allowNull: false
     },
-    // email: {
-    //     type: DataTypes.STRING,
-    //     allowNull: true,
-    //     unique: true
-    // },
+    email: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        unique: true
+    },
     disease:{
         type: DataTypes.STRING,
         allowNull: false
@@ -52,10 +52,11 @@ Patient.init({
         type: DataTypes.BOOLEAN,
         allowNull: false
     },
-    // isseen: {
-    //     type: DataTypes.BOOLEAN,
-    //     allowNull: false
-    // }
+    isseen: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
+    }
 },{
     sequelize,
     modelName:'Patient'

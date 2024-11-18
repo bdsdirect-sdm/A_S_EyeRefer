@@ -21,6 +21,7 @@ class User extends Model{
     public is_deleted!: boolean;
     public deleted_at!: Date;
     public status!: boolean;
+    public Addresses!: string
     }
 
 User.init({
@@ -61,21 +62,21 @@ User.init({
         type: DataTypes.STRING,
         allowNull:false
     },
-    // totalrefered:{
-    //     type: DataTypes.INTEGER,
-    //     allowNull:false,
-    //     defaultValue: 0
-    // },
-    // totalreferalcompleted:{
-    //     type: DataTypes.INTEGER,
-    //     allowNull:false,
-    //     defaultValue: 0
-    // },
-    // totalreferalreceive: {
-    //     type: DataTypes.INTEGER,
-    //     allowNull: true,
-    //     defaultValue: 0
-    // },
+    totalrefered:{
+        type: DataTypes.INTEGER,
+        allowNull:false,
+        defaultValue: 0
+    },
+    totalreferalcompleted:{
+        type: DataTypes.INTEGER,
+        allowNull:false,
+        defaultValue: 0
+    },
+    totalreferalreceive: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 0
+    },
     dob:{
         type: DataTypes.DATEONLY,
         allowNull:true

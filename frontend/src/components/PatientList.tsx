@@ -132,7 +132,7 @@ const PatientList:React.FC = () => {
         <td> {patient?.referedby.firstname} {patient?.referedby?.lastname} </td>
         <td> {patient?.referedto.firstname} {patient?.referedto?.lastname} </td>
         <td> {patient?.referback && ("yes")} {patient?.referback==false && ("No")} </td>
-        <td> {patient?.referalstatus && ("Completed")} {patient?.referalstatus==false && ("Pending")} </td>
+        <td> {patient?.referalstatus && (<p className='text-success'>Completed</p>)} {patient?.referalstatus==false && (<p className='text-warning'>Pending</p>)} </td>
         <td> 
           <div>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-eye text-primary" viewBox="0 0 16 16"
@@ -142,7 +142,9 @@ const PatientList:React.FC = () => {
               <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
             </svg>
 
-            { doctype == '2' && (
+            { doctype == '2' &&
+            // (patient.isseen==true) &&     // Pending (Hide edit and delete after appointment is made)
+             (
               <>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pen mx-2" viewBox="0 0 16 16"
             onClick={()=>{updateNavigator(patient.uuid)}}

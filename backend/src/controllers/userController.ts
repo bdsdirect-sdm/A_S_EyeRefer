@@ -125,9 +125,9 @@ export const getDocList = async(req:any, res:Response) => {
     try{
         const {uuid} = req.user;
         const user = await User.findOne({where:{uuid:uuid}});
-        let docList;
-
+        
         if(req.query.page){
+            let docList;
             const page = parseInt(req.query.page);
             const limit = parseInt(req.query.limit);
             const search = req.query.find;
@@ -150,7 +150,8 @@ export const getDocList = async(req:any, res:Response) => {
                             ]
                         }, 
                     limit:limit, 
-                    offset:offset 
+                    offset:offset,
+                    include: Address
                 });
             }
             else{
@@ -173,22 +174,38 @@ export const getDocList = async(req:any, res:Response) => {
                             ]
                         }, 
                     limit:limit, 
-                    offset:offset 
+                    offset:offset,
+                    include: Address
                 });
             }
+            // console.log("Listing", docList.rows);
+            const b = docList.rows.map((doc)=>{
+                if(doc.Addresses.length != 0){
+                    return doc;
+                }
+                return false;
+            })
+            console.log("Listing", b);
             if(docList){
-                res.status(200).json({"docList":docList.rows, "totaldocs": docList.count, "message":"Docs List Found"});
+                res.status(200).json({"docList":b, "totaldocs": docList.count, "message":"Docs List Found"});
             }
             else{
                 res.status(404).json({"message":"MD List Not Found"});
             }
         } else {
+            let docs;
             if(user?.doctype==1){
-                docList = await User.findAll({ where: { uuid: {[Op.ne]: uuid} }, include:Address });
+                docs = await User.findAll({ where: { uuid: {[Op.ne]: uuid} }, include:Address });
             }
             else{
-                docList = await User.findAll({ where: { doctype:1, uuid: {[Op.ne]: uuid} }, include:Address });
+                docs = await User.findAll({ where: { doctype:1, uuid: {[Op.ne]: uuid} }, include:Address });
             }
+            const docList = docs.filter((doc)=>{
+                if(doc.Addresses.length!=0){
+                    return doc
+                }
+            })
+            // console.log("Listing", docList);
             
             if(docList){
                 res.status(200).json({"docList":docList, "message":"Docs List Found"});
@@ -271,14 +288,6 @@ export const getPatientList = async(req:any, res:Response) => {
             }
         } 
         else {
-        //     const plist = await Patient.findAll({ where: {
-        //         [Op.or]: 
-        //         [
-        //             {referedby:uuid},
-        //             {referedto:uuid},
-        //         ]
-        //     }
-        // });
             const plist = await Patient.findAll({ where: {
                 [Op.or]: 
                 [
@@ -291,7 +300,7 @@ export const getPatientList = async(req:any, res:Response) => {
                 as: "patientId"
             }]
         });
-        // let patientList = piilist.filter((item:any)=>(item.patientId.uuid!=))
+        
         let patientList = plist.filter((item)=>{
             if(!item.patientId){
                 return item
@@ -310,7 +319,10 @@ export const addPatient = async(req:any, res:Response) => {
         const {uuid} = req.user;
         const user = await User.findOne({where:{uuid:uuid}});
         if(user){
+            await user.update({totalrefered: user.totalrefered + 1});
             const {firstname, lastname, disease, address, referedto, referback } = req.body;
+            const Md = await User.findByPk(referedto);
+            await Md?.update({totalreferalreceive: Md.totalreferalreceive + 1});
 
             const patient = await Patient.create({ firstname, lastname, disease, address, referedto, referback, referedby:uuid });
             if(patient){
@@ -419,7 +431,6 @@ export const getPatient = async(req:any, res:Response) => {
             const address = await Address.findByPk(patient?.address);
 
             if(patient){
-
                 res.status(200).json({"patient":patient, "message":"Patient Found Successfully", "referto":refertoUser, "referby":referbyUser, "address":address });
             }
             else{
@@ -536,6 +547,26 @@ export const deleteAddress = async(req:any, res:Response) => {
     }
 }
 
+export const getAppointment = async(req:any, res:Response) => {
+    try{
+        const {appointmentId} = req.params;
+        const appointment = await Appointment.findByPk(appointmentId,{include:[
+            {
+                model:Patient,
+                as:"patientId",
+            }
+        ]});
+        if(appointment){
+            res.status(200).json({ 'appointment':appointment, "message":"Appointment Found" });
+        } else {
+            res.status(404).json({"message": "Appointment not Found"});
+        }
+    }
+    catch(err){
+        res.status(500).json({"message":err});
+    }
+}
+
 export const getAppointmentList = async(req:any, res:Response) => {
     try{
         const {uuid} = req.user;
@@ -562,6 +593,8 @@ export const addAppointment = async(req:any, res:Response) => {
         const user = await User.findByPk(uuid);
         if(user){
             const { type, appointmentdate, patient } = req.body;
+            const mypatient = await Patient.findByPk(patient);
+            await mypatient?.update({isseen:1});
             const appointment = await Appointment.create({
                 type:type,
                 date: appointmentdate,
@@ -592,6 +625,13 @@ export const updateAppointment = async(req:any, res:Response) => {
             if(appointment){
                 
                 const updatedAppointment = await appointment.update(req.body);
+                if(updatedAppointment.status==3){
+                    const patient = await Patient.findByPk(appointment.patient);
+                    const OD = await User.findByPk(patient?.referedby);
+                    await patient?.update({referalstatus:true});
+                    await OD?.update({totalreferalcompleted: OD.totalreferalcompleted+1});
+                    await user.update({ totalreferalcompleted: user.totalreferalcompleted+1 });
+                }
                 if(updatedAppointment){
                     res.status(200).json({"message": "Appointment Updated Successfully"});
                 }
@@ -613,26 +653,26 @@ export const updateAppointment = async(req:any, res:Response) => {
     }
 }
 
-export const deleteAppointment = async(req:any, res:Response) => {
-    try{
-        const { appointmentId } = req.params;
-        const { uuid } = req.user;
-        const user = await User.findByPk(uuid);
-        if(user){
-            const appointment = await Appointment.findByPk(appointmentId);
-            if(appointment){
-                await appointment.destroy();
-                res.status(200).json({"message": "Appointment deleted Successfully"})
-            }
-            else{
-                res.status(404).json({"message": "Appointment not Found"});
-            }
-        }
-        else{
-            res.status(400).json({"message": "You're not authorized "});
-        }
-    }
-    catch(err){
-        res.status(500).json({"message": err});
-    }
-}
+// export const deleteAppointment = async(req:any, res:Response) => {
+//     try{
+//         const { appointmentId } = req.params;
+//         const { uuid } = req.user;
+//         const user = await User.findByPk(uuid);
+//         if(user){
+//             const appointment = await Appointment.findByPk(appointmentId);
+//             if(appointment){
+//                 await appointment.destroy();
+//                 res.status(200).json({"message": "Appointment deleted Successfully"})
+//             }
+//             else{
+//                 res.status(404).json({"message": "Appointment not Found"});
+//             }
+//         }
+//         else{
+//             res.status(400).json({"message": "You're not authorized "});
+//         }
+//     }
+//     catch(err){
+//         res.status(500).json({"message": err});
+//     }
+// }

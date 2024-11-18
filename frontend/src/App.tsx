@@ -24,6 +24,7 @@ import Login from './components/Login';
 import Chat from './components/Chat';
 import react from 'react';
 import './App.css';
+import ViewAppointment from './components/ViewAppointment';
 
 const  App:react.FC = () => {
 
@@ -95,6 +96,10 @@ const  App:react.FC = () => {
         {
           path: '/edit-address',
           element: <UpdateAddress />
+        },
+        {
+          path: '/view-appointment',
+          element: <ViewAppointment />
         },
         {
           path: '/appointment',

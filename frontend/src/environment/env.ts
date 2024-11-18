@@ -19,6 +19,7 @@ interface config{
     ADD_APPOINTMENT: string;
     EDIT_APPOINTMENT: string;
     DELETE_APPOINTMENT: string;
+    VIEW_APPOINTMENT: string
 }
 
 export const Local:config = {
@@ -48,5 +49,6 @@ export const Local:config = {
     ADD_APPOINTMENT: import.meta.env.VITE_ADD_APPOINTMENT,
     EDIT_APPOINTMENT: import.meta.env.VITE_EDIT_APPOINTMENT,
     DELETE_APPOINTMENT: import.meta.env.VITE_DELETE_APPOINTMENT,
-    GET_APPOINTMENT_LIST: import.meta.env.VITE_GET_APPOINTMENT_LIST
+    GET_APPOINTMENT_LIST: import.meta.env.VITE_GET_APPOINTMENT_LIST,
+    VIEW_APPOINTMENT: import.meta.env.VITE_VIEW_APPOINTMENT
 }

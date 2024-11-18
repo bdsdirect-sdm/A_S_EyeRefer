@@ -63,7 +63,7 @@ const AddAppointment:React.FC = () => {
   const validationSchema = Yup.object().shape({
     patient: Yup.string().required("patient is required"),
     appointmentdate: Yup.date().min(new Date(), "Don't select past date").required("Appointment Date is required"),
-    type: Yup.string().required("Type is required"),
+    type: Yup.string().required("Type is required")
   });
 
   const submitHandler = (values:any) => {

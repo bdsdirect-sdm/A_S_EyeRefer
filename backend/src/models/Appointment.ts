@@ -9,6 +9,8 @@ class Appointment extends Model {
     public type!: number; // 1: Surgery, 2: consultation
     public status!: number // 1: Scheduled, 2: Cancelled, 3: Complete
     public date!: DateOnlyDataType;
+    public patient!: string;
+    public doctor!: string;
     public patientId!: string;
     public appointedby!: string;
 }
