@@ -114,17 +114,16 @@
 
 // export default Login;
 
-
-
-
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { useNavigate, Link } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
+// import login_img from '../Assets/login-img.webp'
 import { Local } from '../environment/env';
 import React, { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import api from '../api/axiosInstance';
 import * as Yup from 'yup';
+import '../Styling/login.css'
 
 const Login:React.FC = () => {
   const navigate = useNavigate();
@@ -180,7 +179,40 @@ const Login:React.FC = () => {
     loginMutate.mutate(values);
   }
   return (
+    // <>
+    // <div className='login-body' >
+
+    //   <div className='login-left' >
+    //   <img src={login_img} alt="Eye Refer Logo" height={200} />
+    //   </div>
+
+    //   <div className=' w-50 login-rigth' >
+    //     <Formik
+    //     initialValues={{
+    //       email: '',
+    //       password: '',
+    //       }}
+    //     validationSchema={validationSchema}
+    //     onSubmit={loginSubmit}>
+    //       {()=>(
+    //         <div className='login-form' >
+              
+    //           <div className='heading'>
+    //             Eye Refer
+    //           </div>
+
+    //         <Form  >
+              
+    //         </Form>
+    //         </div>
+    //       )}
+    //     </Formik>
+    //   </div>
+
+    // </div>
+    // </>
     <div>
+      
       <Formik
       initialValues={{
         email: '',
@@ -200,13 +232,16 @@ const Login:React.FC = () => {
                 <Field name="password" type="password" placeholder="Enter your Password" className="form-control"/>
                 <ErrorMessage name="password" component="div" className="text-danger"/>
               </div>
+              <Link className='float-end nav-link text-info' to={'/forget-password'} >Forget Password!</Link>
               <br />
-              <button type="submit" className='btn btn-outline-dark' >Login</button>
+              <br />
+              <button type="submit" className='btn btn-info text-light w-25' >Login</button>
             </Form>
           )}
-        </Formik>
+      </Formik>
 
-        <Link to={'/'} >Don't have an Account</Link>
+        <br />
+        <Link className='nav-link text-info' to={'/signup'} >Don't have an Account</Link>
     </div>
   )
 }

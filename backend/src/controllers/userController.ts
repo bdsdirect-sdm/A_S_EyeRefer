@@ -676,3 +676,37 @@ export const updateAppointment = async(req:any, res:Response) => {
 //         res.status(500).json({"message": err});
 //     }
 // }
+
+export const forgetPasswordOTP = async(req:any, res:Response) => {
+    try{
+        const { email } = req.body;
+        const user = await User.findOne({where: {email: email}});
+        if(user){
+            const OTP = otpGenerator();
+            sendOTP(email, OTP);
+            res.status(201).json({"OTP":OTP, "message":"OTP sent"});
+        }
+        else{
+            res.status(404).json({"message": "User doesn't Exist"});
+        }
+    }
+    catch(err){
+        res.status(500).json({"message": err});
+    }
+}
+
+export const updateforgetedPassword = async(req:any, res:Response) => {
+    try{
+        const { email, password } = req.body;
+        console.log("\n\n data", req.body, "\n\n")
+        const user = await User.findOne({where:{email:email}});
+        if(user){
+            const hashedPassword = await bcrypt.hash(password, 10);
+            await user.update({password: hashedPassword});
+            res.status(200).json({"message": "Password Updated"});
+        }
+    }
+    catch(err){
+        res.status(500).json({"message": err});
+    }
+}

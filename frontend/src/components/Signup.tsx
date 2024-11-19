@@ -249,12 +249,13 @@ const Signup:React.FC = () => {
                         <ErrorMessage name='confirmPass' component="div" className='text-danger' />
                     </div>
                     <br />
-                    <button type='submit' className='btn btn-outline-primary'>Submit</button>
+                    <button type='submit' className='btn btn-info text-light w-25'>Submit</button>
                 </Form>
                 </>
             )}
         </Formik>
-            <Link to={'/Login'} >Already have an Account</Link>
+        <br />
+            <Link className='text-info nav-link' to={'/Login'} >Already have an Account</Link>
     </div>
   )
 }

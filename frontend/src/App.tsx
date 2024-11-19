@@ -25,6 +25,7 @@ import Chat from './components/Chat';
 import react from 'react';
 import './App.css';
 import ViewAppointment from './components/ViewAppointment';
+import ForgetPassword from './components/ForgetPassword';
 
 const  App:react.FC = () => {
 
@@ -117,6 +118,10 @@ const  App:react.FC = () => {
           path: '/chat',
           element: < Chat />
         },
+        {
+          path: '/forget-password',
+          element: < ForgetPassword />
+        }
       ]
     }
   ]
