@@ -123,7 +123,6 @@ import React, { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import api from '../api/axiosInstance';
 import * as Yup from 'yup';
-import '../Styling/login.css'
 
 const Login:React.FC = () => {
   const navigate = useNavigate();
@@ -140,8 +139,11 @@ const Login:React.FC = () => {
       console.log("Hello", response);
       if (response.status == 200){
         if(response.data.user.is_verified){
-          localStorage.setItem("doctype", response.data.user.doctype)
+          localStorage.setItem("doctype", response.data.user.doctype);
           localStorage.setItem("token", response.data.token);
+          localStorage.setItem('firstname', response.data.user.firstname);
+          localStorage.setItem('lastname', response.data.lastname);
+          localStorage.setItem('profile', response.data.user.profile_photo);
           toast.success("Login Successfully");
           navigate('/dashboard');
         }

@@ -1,0 +1,150 @@
+/* Staff Form Container */
+.staff-form-container {
+    max-width: 75%;
+    padding: 20px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    margin-left: 282px;
+    margin-bottom: 2%;
+}
+
+/* Form Styles */
+.staff-form {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: 1fr 1fr;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+input,
+select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    color: #333;
+}
+
+input:focus,
+select:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+button {
+    grid-column: span 2;
+    padding: 12px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #2a99b6;
+}
+
+/* Staff List */
+.staff-list {
+    margin-top: 40px;
+}
+
+.staff-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.staff-table th,
+.staff-table td {
+    padding: 12px;
+    text-align: left;
+    font-size: 1rem;
+}
+
+/* Remove the borders of the table */
+.staff-table,
+.staff-table th,
+.staff-table td {
+    border: none;
+}
+
+.staff-table th {
+    background-color: #f1f1f1;
+    color: #333;
+}
+
+.staff-table tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+.staff-table tr:hover {
+    background-color: #f5f5f5;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .staff-form {
+        grid-template-columns: 1fr;
+    }
+
+    .staff-table th,
+    .staff-table td {
+        font-size: 0.9rem;
+    }
+
+    button {
+        font-size: 1rem;
+    }
+}
+
+/* Additional Styles for Header and Sidebar Spacing */
+.header-container {
+    margin-bottom: 20px;
+    /* Add space between header and the main content */
+}
+
+.sidebar {
+    margin-top: 20px;
+    /* Adds space between sidebar and content below */
+}
+
+/* Add space below the sidebar if needed */
+.sidebar-logo {
+    margin-bottom: 20px;
+}
+
+.nav-links {
+    margin-top: 20px;
+}
+
+/* Adjust sidebar links for readability */
+.nav-link {
+    display: block;
+    padding: 10px 15px;
+    margin: 5px 0;
+    font-size: 1.1rem;
+    color: #333;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.nav-link:hover {
+    background-color: #007bff;
+    color: white;
+}
