@@ -1,8 +1,10 @@
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 // import { Local } from '../environment/env';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import logo from '../Assets/login-img.webp';
+import '../Styling/Login.css'
 import api from '../api/axiosInstance';
 import * as Yup from 'yup';
 
@@ -14,6 +16,10 @@ const ForgetPassword:React.FC = () => {
     useEffect(()=>{
         if(token){
             navigate('/dashboard');
+        }
+
+        return()=>{
+          localStorage.removeItem("OTP");
         }
     },[]);
 
@@ -61,65 +67,93 @@ const ForgetPassword:React.FC = () => {
 
   return (
     <>
-    {!(localStorage.getItem("OTP")) && (
-      <Formik
-      initialValues={{
-        email:''
-      }}
-      validationSchema={emailValidationSchema}
-      onSubmit={emailSubmitHandler}
-      >
-        {()=>(
-          <Form>
-            <div className="form-group">
-              <label>Email</label>
-              <Field type="text" name="email" className="form-control" />
-              <ErrorMessage name="email" component="div" className="text-danger" />
-            </div>
-            <br />
-            <button type="submit" className="btn btn-info">Submit</button>
-          </Form>
-        )}
-      </Formik>
-    )}
+    <div className='login-container'>
+      <div className='login-image'>
+        <img src={`${logo}`} width={200} alt="Login Illustration" />
+      </div>
 
-    { localStorage.getItem("OTP") && (
-      <Formik
-      initialValues={{
-        OTP:'',
-        password:'',
-        confirmPassword:''
-      }}
-      validationSchema={updatePasswordValidationSchema}
-      onSubmit={updateHandler}
-      >
-        {({values})=>(
-          <Form>
-            <div className="form-group">
-              <label>OTP</label>
-              <Field type="text" name="OTP" className="form-control" />
-              <ErrorMessage name="OTP" component="div" className="text-danger" />
-            </div>
-            {values.OTP == localStorage.getItem("OTP") && (
-              <>
-            <div className="form-group">
-              <label>Password</label>
-              <Field type="password" name="password" className="form-control" />
-              <ErrorMessage name="password" component="div" className="text-danger" />
-            </div>
-            <div className="form-group">
-              <label>Confirm Password</label>
-              <Field type="password" name="confirmPassword" className="form-control" />
-              <ErrorMessage name="confirmPassword" component="div" className="text-danger" />
-            </div>
-              </>
-            )}
-            <br />
-            <button type="submit" className="btn btn-info">Submit</button>
-          </Form>
-        )}
-      </Formik>
-    ) }
+
+      <div className='login-form bg-light'>
+      {!(localStorage.getItem("OTP")) && (
+        <>
+        <Formik
+        initialValues={{
+          email:''
+        }}
+        validationSchema={emailValidationSchema}
+        onSubmit={emailSubmitHandler}
+        >
+          {()=>(
+            <Form className='form bg-white rounded border border-1 p-4 pt-5 h-75' >
+              <div className='page-heading'><h2>Forget Password</h2></div>
+              <div className="form-group mt-5">
+                <label>Email</label>
+                <Field type="text" name="email" className="form-control" />
+                <ErrorMessage name="email" component="div" className="text-danger" />
+              </div>
+              <br />
+              <button type="submit" className="btn btn-info w-100 py-2">Submit</button>
+              <br /><br />
+              <span className='d-flex backlogin'>
+                Back to Login ? 
+                <Link to='/login' className='nav-link text-info ms-1' > Back</Link>
+              </span>
+            </Form>
+          )}
+        </Formik>
+        {/* <Link to='/login'>Back</Link> */}
+          </>
+      )}
+
+      { localStorage.getItem("OTP") && (
+        <Formik
+        initialValues={{
+          OTP:'',
+          password:'',
+          confirmPassword:''
+        }}
+        validationSchema={updatePasswordValidationSchema}
+        onSubmit={updateHandler}
+        >
+          {({values})=>(
+            <Form className='form bg-white rounded border border-1 p-4 pt-5' >
+              <div className='page-heading'><h2>Generate New Password</h2></div>
+              
+              <div className="form-group">
+                <label>OTP</label>
+                <Field type="text" name="OTP" className="form-control" />
+                <ErrorMessage name="OTP" component="div" className="text-danger" />
+              </div>
+              {values.OTP == localStorage.getItem("OTP") && (
+                <>
+              <div className="form-group">
+                <label>Password</label>
+                <Field type="password" name="password" className="form-control" />
+                <ErrorMessage name="password" component="div" className="text-danger" />
+              </div>
+              <div className="form-group">
+                <label>Confirm Password</label>
+                <Field type="password" name="confirmPassword" className="form-control" />
+                <ErrorMessage name="confirmPassword" component="div" className="text-danger" />
+              </div>
+                </>
+              )}
+              <br />
+              <button type="submit" className="btn btn-info w-100 py-2">Submit</button>
+              <br /><br />
+              <span className='d-flex backlogin'>
+                Back to Login ? 
+                <Link to='/login' className='nav-link text-info ms-1' > Back</Link>
+                <br />
+              </span>
+              <br />
+            </Form>
+          )}
+        </Formik>
+      ) }
+
+      </div>
+    </div>
     </>
   )
 }

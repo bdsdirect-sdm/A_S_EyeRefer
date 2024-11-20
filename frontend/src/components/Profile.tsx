@@ -27,6 +27,7 @@ const Profile: React.FC = () => {
     if (!token) {
       navigate("/login");
     }
+    
   }, []);
 
   const deleteHandler = async (addressId:any) => {
@@ -44,7 +45,7 @@ const Profile: React.FC = () => {
       toast.error(err.response.data.message);
     }
   }
-
+  
   const getUser = async () => {
     try {
       const response = await api.get(`${Local.GET_USER}`, {

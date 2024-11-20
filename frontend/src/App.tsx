@@ -31,21 +31,25 @@ const  App:react.FC = () => {
 
   const router = createBrowserRouter([
     {
+      path:'/signup',
+      element: <Signup />
+    },
+    {
+      path: '/login',
+      element: <Login />
+    },
+    {
+      path: '/verify',
+      element: <Verify />
+    },
+    {
+      path: '/forget-password',
+      element: < ForgetPassword />
+    },
+    {
       path:'/',
       element: <Header />,
       children:[
-        {
-          path:'/',
-          element: <Signup />
-        },
-        {
-          path: '/login',
-          element: <Login />
-        },
-        {
-          path: '/verify',
-          element: <Verify />
-        },
         {
           path: '/dashboard',
           element: <Dashboard />
@@ -117,10 +121,6 @@ const  App:react.FC = () => {
         {
           path: '/chat',
           element: < Chat />
-        },
-        {
-          path: '/forget-password',
-          element: < ForgetPassword />
         }
       ]
     }

@@ -106,6 +106,15 @@ const PatientList:React.FC = () => {
           }}
           >Search</button>
           </div>
+
+          {doctype == '2' && (
+            <>
+            <button type="button" className='btn btn-primary py-2 float-end' onClick={()=>{
+              navigate('/add-patient')
+            }}>+ Add Referral Patient </button>
+          <br /><br />
+            </>
+          )}
           <hr />
 
           

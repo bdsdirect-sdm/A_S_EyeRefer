@@ -1,11 +1,13 @@
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { toast } from 'react-toastify';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import api from '../api/axiosInstance';
+import logo from '../Assets/login-img.webp'
 import { Local } from '../environment/env';
-import * as Yup from 'yup';
 import React, { useEffect } from 'react';
+import api from '../api/axiosInstance';
+import { toast } from 'react-toastify';
+import '../Styling/Login.css';
+import * as Yup from 'yup';
 
 
 const Verify:React.FC = () => {
@@ -19,7 +21,7 @@ const Verify:React.FC = () => {
         }
 
         return ()=>{
-            localStorage.removeItem('OTP');
+            // localStorage.removeItem('OTP');
         }
     });
 
@@ -54,27 +56,36 @@ const Verify:React.FC = () => {
     }
 
   return (
-    <div>
-        <Formik
-        initialValues={{
-            otp: ''
-            }}
-        validationSchema={validationSchema}
-        onSubmit={handleSubmit}>
-            {() => (
-                <Form>
-                    <div className="form-group">
-                        <label>OTP</label>
-                        <Field type="text" name="otp" className="form-control" />
-                        <ErrorMessage name="otp" component="div" className="text-danger" />
-                    </div>
-                    <br />
-                        <button type="submit" className='btn btn-outline-dark' >Submit</button>
-                </Form>
-            )}
-        </Formik>
+    <>
+    <div className="login-container">
 
+        <div className="login-image">
+            <img src={`${logo}`} width={200} alt="Login Illustration" />
+        </div>
+    
+        <div className="login-form bg-light">
+            <Formik
+            initialValues={{
+                otp: ''
+                }}
+            validationSchema={validationSchema}
+            onSubmit={handleSubmit}>
+                {() => (
+                    <Form className='form bg-white rounded border border-1 p-4 pt-5 h-75'>
+                        <div className='page-heading'><h2>Verify</h2></div>
+                        <div className="form-group mt-5 ">
+                            <label>OTP</label>
+                            <Field type="text" name="otp" className="form-control" />
+                            <ErrorMessage name="otp" component="div" className="text-danger" />
+                        </div>
+                        <br />
+                            <button type="submit" className='btn btn-outline-dark' >Submit</button>
+                    </Form>
+                )}
+            </Formik>
+        </div>
     </div>
+    </>
   )
 }
 
