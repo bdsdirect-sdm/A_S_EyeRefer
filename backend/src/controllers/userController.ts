@@ -307,6 +307,10 @@ export const getPatientList = async(req:any, res:Response) => {
                 {
                     model:User,
                     as: "refertodoc"
+                },
+                {
+                    model: Appointment,
+                    as: "patientId"
                 }
         ]
         });

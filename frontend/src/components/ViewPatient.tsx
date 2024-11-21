@@ -16,7 +16,8 @@ const ViewPatient:React.FC = () => {
 
     return ()=>{
       localStorage.removeItem('patientId');
-      navigate('/patient')
+      // history.back();
+      // navigate('/dashboard');
     }
   },[])
 
