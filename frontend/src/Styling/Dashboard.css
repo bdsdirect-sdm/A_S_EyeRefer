@@ -1,0 +1,24 @@
+.referrals-count{
+    margin-left: auto;
+}
+
+.referal-placed{
+    font-size: small;
+}
+
+.dashboard-img{
+    background: linear-gradient(to top, #35c0e4 0%, #43d79e 100%);
+}
+
+.chng-pointer:hover{
+    cursor: pointer;
+}
+
+.add-refer-btn{
+    margin-left: auto;
+    background-color: #2A99B6;
+}
+
+.add-refer-btn:hover{
+    background-color: #1484a0;
+}

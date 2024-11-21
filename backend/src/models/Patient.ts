@@ -62,13 +62,13 @@ Patient.init({
     modelName:'Patient'
 })
 
-User.hasMany(Patient, { foreignKey: 'referedby', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
-Patient.belongsTo(User, { foreignKey: 'referedby', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+User.hasMany(Patient, { foreignKey: 'referedby', as: "referbydoc", onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+Patient.belongsTo(User, { foreignKey: 'referedby', as: "referbydoc", onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 
-User.hasMany(Patient, { foreignKey: 'referedto', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
-Patient.belongsTo(User, { foreignKey: 'referedto', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+User.hasMany(Patient, { foreignKey: 'referedto', as: "refertodoc", onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+Patient.belongsTo(User, { foreignKey: 'referedto', as: "refertodoc", onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 
-Address.hasMany(Patient, {foreignKey:"address", onDelete: 'CASCADE', onUpdate: 'CASCADE' });
-Patient.belongsTo(Address, {foreignKey:"address", onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+Address.hasMany(Patient, {foreignKey:"address", as: "docaddress", onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+Patient.belongsTo(Address, {foreignKey:"address", as: "docaddress", onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 
 export default Patient;

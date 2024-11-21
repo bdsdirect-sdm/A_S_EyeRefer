@@ -1,7 +1,11 @@
 .content{
     position: absolute;
     z-index: 1;
-    top: 20%;
-    left: 25%;
+    top: 13%;
+    left: 13.36%;
+    height: 87vh;
+    width: 82.9%;
+    /* border: solid 2px black; */
+    padding: 2%;
     
 }

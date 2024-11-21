@@ -295,18 +295,29 @@ export const getPatientList = async(req:any, res:Response) => {
                     {referedto:uuid},
                 ]
             },
-            include:[{
-                model:Appointment,
-                as: "patientId"
-            }]
+            include:[
+                {
+                    model:Appointment,
+                    as: "patientId"
+                },
+                {
+                    model:User,
+                    as: "referbydoc"
+                },
+                {
+                    model:User,
+                    as: "refertodoc"
+                }
+        ]
         });
-        
+        console.log(plist);
+
         let patientList = plist.filter((item)=>{
             if(!item.patientId){
                 return item
             }
         })
-        res.status(200).json({"patientList":patientList, "message": "Patient List Found"});
+        res.status(200).json({"patientList":patientList, "pList":plist, "message": "Patient List Found"});
         }
     }
     catch(err){
