@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Local } from '../environment/env';
 import api from '../api/axiosInstance';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import '../Styling/Dashboard.css';
 import ref from '../Assets/ref.svg';
@@ -11,12 +11,15 @@ import doc from '../Assets/doc.png'
 const Dashboard:React.FC = () => {
     const navigate = useNavigate()
     const token = localStorage.getItem("token");
+    const [page, setPage] = useState<number>(1);
+    const search = '';
+    const [Input, setInput] = useState('');
+    let totalPages:any;
     
     useEffect(()=>{
         if(!token){
             navigate("/login");
         }
-        alert("Pagination is pending.........");
     },[]);
 
 
@@ -48,25 +51,26 @@ const Dashboard:React.FC = () => {
         queryFn: getUser
     });
 
-    const getPatients = async() => {
+    const fetchPatient = async(pageno:any, search:any) => {
         try{
-          const response = await api.get(`${Local.GET_PATIENT_LIST}`, {
-            headers: {
+          const response = await api.get(`${Local.GET_PATIENT_LIST}?page=${pageno}&limit=10&find=${search}`, {
+            headers:{
               Authorization: `Bearer ${token}`
             }
-          });
+          })
+          // console.log("Listing------------------------------------------------>", response.data)
+          setInput('');
           return response.data;
         }
         catch(err:any){
           console.log(err.response.data.message);
-          return;
         }
       }
     
-      const { data:patientList, isLoading:patientloading, isError:ispatientError, error:patientError } = useQuery({
-        queryKey: ['patients'],
-        queryFn: getPatients
-      })
+      const { data: patientList, error:patientError, isLoading:patientloading, isError:ispatientError } = useQuery({
+        queryKey: ['patient', page, search],
+        queryFn: ()=>fetchPatient(page, search)
+      });
 
     if(isLoading || patientloading ){
         return (
@@ -90,10 +94,14 @@ const Dashboard:React.FC = () => {
         )
     }
 
+    totalPages = Math.ceil(patientList?.totalpatients/10);
+    // console.log(totalPages);
+    console.log(patientList)
+
   return (
     <div className='dashboard-containe me-3' >
         <div>
-            <p className='' >Dashboard</p>
+            <p >Dashboard</p>
 
             <div className='d-flex dash-box justify-content-between' >
                 
@@ -173,7 +181,7 @@ const Dashboard:React.FC = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {patientList.pList.map((patient:any)=>(
+                        {patientList.patientList.map((patient:any)=>(
                             <>
                             <tr key={patient.uuid}>
                                 <td> {patient.firstname} {patient.lastnamme} </td>
@@ -186,7 +194,7 @@ const Dashboard:React.FC = () => {
                                 {(patient.patientId == null && (
                                     <td> -- </td>
                                 ))}
-                                <td> {patient.refertodoc.firstname} {patient.refertodoc.lastname} </td>
+                                <td> {patient.referedto.firstname} {patient.referedto.lastname} </td>
                                 {(patient.patientId != null && patient.patientId.status == 1 && (
                                     <td> Scheduled </td>
                                 ))}
@@ -223,6 +231,54 @@ const Dashboard:React.FC = () => {
                     </tbody>
                 </table>
             </div>
+
+            <div className='float-end bg-white pagi-width rounded'>
+                <div className='p-1 d-flex'>
+                    <button className=' pb-2 pt-1 btn btn-white border-0' onClick={()=>{setPage(1)
+                    }} disabled={page<2?true:false}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-chevron-double-left" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+                            <path fill-rule="evenodd" d="M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+                        </svg>
+                    </button>
+                    <button className=' pb-2 pt-1 btn border-0 btn-white' onClick={()=>{setPage((prev)=>prev-1)
+                    }} disabled={page<2?true:false}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-chevron-left" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+                        </svg>
+                    </button>
+                    <button className=' pb-2 pt-1 btn border-0 btn-white' onClick={()=>{setPage(1)
+                    }} disabled={page==1?true:false}>
+                        1
+                    </button>
+                    <button className=' pb-2 pt-1 btn border-0 btn-white' onClick={()=>{setPage(2)
+                    }} disabled={page==2?true:false}>
+                        2
+                    </button>
+                    <button className=' pb-2 pt-1 btn border-0 btn-white' onClick={()=>{setPage(3)
+                    }} disabled={page==3?true:false}>
+                        3
+                    </button>
+                    <div className=' pb-2 pt-1 px-3 btn btn-white '>
+                        ...
+                    </div>
+                    <button className=' pb-2 pt-1 btn border-0 btn-white' onClick={()=>{setPage((prev)=>prev+1)
+                    }} disabled={page>=totalPages?true:false}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-chevron-right" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+                        </svg>
+                    </button>
+                    <button className=' pb-2 pt-1 btn border-0 btn-white' onClick={()=>{setPage(totalPages)
+                    }} disabled={page>=totalPages?true:false}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-chevron-double-right" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708"/>
+                            <path fill-rule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708"/>
+                        </svg>
+                    </button>
+
+                </div>
+            </div>
+            <br /><br /><br /><br /><br />
         
         </div>
 

@@ -13,6 +13,10 @@
     height: 30px;
 }
 
+.pagi-width{
+    width: 22vw;
+}
+
 .dashboard-img{
     background: linear-gradient(to top, #35c0e4 0%, #43d79e 100%);
 }

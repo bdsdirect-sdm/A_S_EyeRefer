@@ -249,6 +249,24 @@ export const getPatientList = async(req:any, res:Response) => {
                             }
                         ]
                     },
+                    include:[
+                        {
+                            model:Appointment,
+                            as: "patientId"
+                        },
+                        {
+                            model:User,
+                            as: "referbydoc"
+                        },
+                        {
+                            model:User,
+                            as: "refertodoc"
+                        },
+                        {
+                            model: Appointment,
+                            as: "patientId"
+                        }
+                    ],
                     limit:limit,
                     offset:offset
                 });
@@ -314,7 +332,6 @@ export const getPatientList = async(req:any, res:Response) => {
                 }
         ]
         });
-        console.log(plist);
 
         let patientList = plist.filter((item)=>{
             if(!item.patientId){
