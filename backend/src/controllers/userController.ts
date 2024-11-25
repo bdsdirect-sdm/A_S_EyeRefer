@@ -2,6 +2,8 @@ import { Local } from "../environment/env";
 import Address from "../models/Address";
 import Patient from "../models/Patient";
 import Appointment from "../models/Appointment";
+import Chat from "../models/Chat";
+import Room from "../models/Room";
 import sendOTP from "../utils/mailer";
 import User from "../models/User";
 import { Response } from 'express';

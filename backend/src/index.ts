@@ -2,20 +2,27 @@ import express from 'express';
 import cors from 'cors';
 import { Local } from './environment/env';
 import sequelize from './config/db';
-import User from './models/User';
 import userRouter from './routers/userRouter';
 import {createServer} from 'http';
+import {Server} from 'socket.io'
 // import sequelize from 'seq';
 
 const app = express();
 
-export const httpServer = createServer(app);
+const httpServer = createServer(app);
 
-    
+export const io = new Server(httpServer,{
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST", "PUT"],
+        credentials: true
+        }
+})
+
 app.use(cors());
 app.use(express.json());
 app.use("/", userRouter);
-sequelize.sync({force:false}).then(()=>{
+sequelize.sync().then(()=>{
     console.log('Database connected');
     
     httpServer.listen(Local.SERVER_PORT,  () => {

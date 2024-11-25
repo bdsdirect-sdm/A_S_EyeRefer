@@ -1,10 +1,14 @@
-import {Server} from 'socket.io'
-import { httpServer } from '../index'
+import { io } from "..";
+import { joinRoom, sendMessage } from './event'
 
-const io = new Server(httpServer,{
-    cors: {
-        origin: "*",
-        methods: ["GET", "POST", "PUT"],
-        credentials: true
-        }
-})
+io.on('connection', (socket) => {
+    console.log('Client connected');
+
+    joinRoom(socket);
+
+    sendMessage(socket);
+
+    socket.on('disconnect', ()=>{
+        console.log('Client disconnected');
+    });
+});
