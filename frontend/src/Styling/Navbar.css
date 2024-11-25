@@ -2,7 +2,7 @@
     background-color: #000000; /* Bootstrap secondary color */
     position: fixed;
     width: 100vw;
-    z-index: 2;
+    z-index: 3;
     padding: 10px 20px;
   }
   

@@ -62,8 +62,8 @@ const DoctorList:React.FC = () => {
   return (
     <>
     <div className='d-flex' >
-      <input className='form-control w-25 border border-dark mx-3 mb-5' type="search" name="find" value={Input} onChange={(e:any)=>{setInput(e.target.value)}} />
-      <button className='btn btn-outline-dark mb-5' type="submit" 
+      <input className='form-control w-25 border border-dark mx-3 mb-5 p-2' type="search" name="find" value={Input} onChange={(e:any)=>{setInput(e.target.value)}} />
+      <button className='btn btn-outline-dark mb-5 ' type="submit" 
         onClick={(e:any)=>{
         setSearch(Input);
         setPage(1);

@@ -1,10 +1,17 @@
-import React from 'react'
-import { Outlet } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { Outlet, useNavigate } from 'react-router-dom'
 import Navbar from './Navbar.tsx';
 import Sidebar from './Sidebar.tsx';
 import '../Styling/Header.css'
 
 const Header:React.FC = () => {
+  const navigate = useNavigate();
+  useEffect(()=>{
+    if(!localStorage.getItem('token')){
+      navigate('/login')
+    }
+
+  },[])
   return (
     <>
       <Navbar />

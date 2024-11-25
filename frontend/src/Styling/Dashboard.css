@@ -3,7 +3,7 @@
 }
 
 .referal-placed{
-    font-size: 15px;
+    font-size: 14px;
 }
 
 .dashboard-eye{
@@ -15,6 +15,10 @@
 
 .dashboard-img{
     background: linear-gradient(to top, #35c0e4 0%, #43d79e 100%);
+}
+
+.chng-pointer{
+    width: 30%;
 }
 
 .chng-pointer:hover{
@@ -33,7 +37,11 @@
 tr{
     height: 7vh;
     text-align: center;
-    font-size: 16px;
+    font-size: 12px;
+}
+
+td{
+    width: 20px;
 }
 
 .spinner{
