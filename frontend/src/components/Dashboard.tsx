@@ -13,10 +13,6 @@ const Dashboard:React.FC = () => {
     const token = localStorage.getItem("token");
     const [page, setPage] = useState<number>(1);
     const search = '';
-<<<<<<< HEAD
-    const [Input, setInput] = useState('');
-=======
->>>>>>> 46f9aac1006e19b14d3ee8632a33a8aa74ee02bc
     let totalPages:any;
     
     useEffect(()=>{
@@ -62,10 +58,6 @@ const Dashboard:React.FC = () => {
             }
           })
           // console.log("Listing------------------------------------------------>", response.data)
-<<<<<<< HEAD
-          setInput('');
-=======
->>>>>>> 46f9aac1006e19b14d3ee8632a33a8aa74ee02bc
           return response.data;
         }
         catch(err:any){
@@ -77,20 +69,19 @@ const Dashboard:React.FC = () => {
         queryKey: ['patient', page, search],
         queryFn: ()=>fetchPatient(page, search)
       });
-<<<<<<< HEAD
-=======
 
-      const directChat = (patient:any, user1:any, user2:any, user:any) => {
+      const directChat = (patient:any, user1:any, user2:any, user:any, firstname:any, lastname:any) => {
         const chatdata = {
             patient: patient,
             user1: user1,
             user2: user2,
-            user:user
+            user:user,
+            roomname: `${firstname} ${lastname}`
         };
         localStorage.setItem('chatdata', JSON.stringify(chatdata));
         navigate('/chat')
+        return;
       }
->>>>>>> 46f9aac1006e19b14d3ee8632a33a8aa74ee02bc
 
     if(isLoading || patientloading ){
         return (
@@ -116,12 +107,8 @@ const Dashboard:React.FC = () => {
 
     totalPages = Math.ceil(patientList?.totalpatients/10);
     // console.log(totalPages);
-<<<<<<< HEAD
-    console.log(patientList)
-=======
     console.log(patientList);
     console.log(data?.data);
->>>>>>> 46f9aac1006e19b14d3ee8632a33a8aa74ee02bc
 
   return (
     <div className='dashboard-containe me-3' >
@@ -240,7 +227,7 @@ const Dashboard:React.FC = () => {
                                     <td>No</td>
                                 )}
                                 <td> <p className = 'text-primary text-decoration-underline chng-pointer' onClick={()=>{
-                                    directChat(patient.uuid, patient.referedby.uuid, patient.referedto.uuid, data?.data.user.uuid);
+                                    directChat(patient.uuid, patient.referedby.uuid, patient.referedto.uuid, data?.data.user.uuid, patient.firstname, patient.lastname);
                                 }} >Link</p> </td>
                                 <td>
                                     <div className='dashboard-eye ms-2 pt-1 rounded-1' >
@@ -264,14 +251,14 @@ const Dashboard:React.FC = () => {
                     <button className=' pb-2 pt-1 btn btn-white border-0' onClick={()=>{setPage(1)
                     }} disabled={page<2?true:false}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-chevron-double-left" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
-                            <path fill-rule="evenodd" d="M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+                            <path fillRule="evenodd" d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+                            <path fillRule="evenodd" d="M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
                         </svg>
                     </button>
                     <button className=' pb-2 pt-1 btn border-0 btn-white' onClick={()=>{setPage((prev)=>prev-1)
                     }} disabled={page<2?true:false}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-chevron-left" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+                            <path fillRule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
                         </svg>
                     </button>
                     <button className=' pb-2 pt-1 btn border-0 btn-white' onClick={()=>{setPage(1)
@@ -292,14 +279,14 @@ const Dashboard:React.FC = () => {
                     <button className=' pb-2 pt-1 btn border-0 btn-white' onClick={()=>{setPage((prev)=>prev+1)
                     }} disabled={page>=totalPages?true:false}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-chevron-right" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+                            <path fillRule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
                         </svg>
                     </button>
                     <button className=' pb-2 pt-1 btn border-0 btn-white' onClick={()=>{setPage(totalPages)
                     }} disabled={page>=totalPages?true:false}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-chevron-double-right" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708"/>
-                            <path fill-rule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708"/>
+                            <path fillRule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708"/>
+                            <path fillRule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708"/>
                         </svg>
                     </button>
 
