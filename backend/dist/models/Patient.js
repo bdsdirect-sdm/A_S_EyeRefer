@@ -25,6 +25,11 @@ Patient.init({
         type: sequelize_1.DataTypes.STRING,
         allowNull: false
     },
+    email: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true,
+        unique: true
+    },
     disease: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: false
@@ -37,15 +42,20 @@ Patient.init({
     referback: {
         type: sequelize_1.DataTypes.BOOLEAN,
         allowNull: false
+    },
+    isseen: {
+        type: sequelize_1.DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
     }
 }, {
     sequelize: db_1.default,
     modelName: 'Patient'
 });
-User_1.default.hasMany(Patient, { foreignKey: 'referedby', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
-Patient.belongsTo(User_1.default, { foreignKey: 'referedby', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
-User_1.default.hasMany(Patient, { foreignKey: 'referedto', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
-Patient.belongsTo(User_1.default, { foreignKey: 'referedto', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
-Address_1.default.hasMany(Patient, { foreignKey: "address", onDelete: 'CASCADE', onUpdate: 'CASCADE' });
-Patient.belongsTo(Address_1.default, { foreignKey: "address", onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+User_1.default.hasMany(Patient, { foreignKey: 'referedby', as: "referbydoc", onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+Patient.belongsTo(User_1.default, { foreignKey: 'referedby', as: "referbydoc", onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+User_1.default.hasMany(Patient, { foreignKey: 'referedto', as: "refertodoc", onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+Patient.belongsTo(User_1.default, { foreignKey: 'referedto', as: "refertodoc", onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+Address_1.default.hasMany(Patient, { foreignKey: "address", as: "docaddress", onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+Patient.belongsTo(Address_1.default, { foreignKey: "address", as: "docaddress", onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 exports.default = Patient;

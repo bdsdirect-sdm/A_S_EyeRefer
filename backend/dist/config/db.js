@@ -9,6 +9,6 @@ const DB_HOST = env_1.Local.DB_HOST;
 const DB_DIALECT = env_1.Local.DB_DIALECT;
 const sequelize = new sequelize_1.Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
     host: DB_HOST,
-    dialect: 'mysql'
+    dialect: 'mysql',
 });
 exports.default = sequelize;

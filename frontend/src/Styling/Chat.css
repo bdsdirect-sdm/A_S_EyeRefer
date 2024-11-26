@@ -1,0 +1,20 @@
+.chat-box{
+    height: 60vh;
+    width: 55vw;
+}
+
+.msg-box{
+    width: 55vw;
+}
+
+.send-btn{
+    background: #43d79e;
+    height:35px;
+    width: 32.5px;
+}
+
+.send-icon{
+    padding: 0px 0px 0px 0px;
+    height:40px;
+    width: 20px;
+}

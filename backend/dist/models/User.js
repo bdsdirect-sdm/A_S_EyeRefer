@@ -46,6 +46,21 @@ User.init({
         type: sequelize_1.DataTypes.STRING,
         allowNull: false
     },
+    totalrefered: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+    },
+    totalreferalcompleted: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+    },
+    totalreferalreceive: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 0
+    },
     dob: {
         type: sequelize_1.DataTypes.DATEONLY,
         allowNull: true

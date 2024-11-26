@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
-import Navbar from './Navbar.tsx';
+import Navbar, { Logout } from './Navbar.tsx';
 import Sidebar from './Sidebar.tsx';
 import '../Styling/Header.css'
 
@@ -9,6 +9,7 @@ const Header:React.FC = () => {
   useEffect(()=>{
     if(!localStorage.getItem('token')){
       navigate('/login')
+      Logout();
     }
 
   },[])

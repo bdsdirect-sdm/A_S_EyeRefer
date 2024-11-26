@@ -170,9 +170,17 @@ const Dashboard:React.FC = () => {
             
             <div className='d-flex  mt-4'>
                 <h5 className='mt-2' > Referral Patient </h5>
-                <button type="button" className=' add-refer-btn btn' onClick={()=>{
-                    navigate('/add-patient');
-                }} >+ Add Referral Patient </button>
+                {localStorage.getItem('doctype') == '2' && (
+                    <button type="button" className=' add-refer-btn btn' onClick={()=>{
+                        navigate('/add-patient');
+                    }} >+ Add Referral Patient </button>
+                )}
+                {localStorage.getItem('doctype') == '1' && (
+                    <button type="button" className=' add-refer-btn btn' onClick={()=>{
+                        navigate('/add-appointment');
+                    }} >+ Add Appointment </button>
+                )}
+
             </div>
             
             <div>
@@ -245,54 +253,57 @@ const Dashboard:React.FC = () => {
                     </tbody>
                 </table>
             </div>
+            { totalPages > 1 && (
+                <>
+                    <div className='float-end bg-white pagi-width rounded'>
+                        <div className='p-1 d-flex'>
+                            <button className=' pb-2 pt-1 btn btn-white border-0' onClick={()=>{setPage(1)
+                            }} disabled={page<2?true:false}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-chevron-double-left" viewBox="0 0 16 16">
+                                    <path fillRule="evenodd" d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+                                    <path fillRule="evenodd" d="M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+                                </svg>
+                            </button>
+                            <button className=' pb-2 pt-1 btn border-0 btn-white' onClick={()=>{setPage((prev)=>prev-1)
+                            }} disabled={page<2?true:false}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-chevron-left" viewBox="0 0 16 16">
+                                    <path fillRule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+                                </svg>
+                            </button>
+                            <button className=' pb-2 pt-1 btn border-0 btn-white' onClick={()=>{setPage(1)
+                            }} disabled={page==1?true:false}>
+                                1
+                            </button>
+                            <button className=' pb-2 pt-1 btn border-0 btn-white' onClick={()=>{setPage(2)
+                            }} disabled={page==2?true:false}>
+                                2
+                            </button>
+                            <button className=' pb-2 pt-1 btn border-0 btn-white' onClick={()=>{setPage(3)
+                            }} disabled={page==3?true:false}>
+                                3
+                            </button>
+                            <div className=' pb-2 pt-1 px-2 btn btn-white '>
+                                ...
+                            </div>
+                            <button className=' pb-2 pt-1 btn border-0 btn-white' onClick={()=>{setPage((prev)=>prev+1)
+                            }} disabled={page>=totalPages?true:false}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-chevron-right" viewBox="0 0 16 16">
+                                    <path fillRule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+                                </svg>
+                            </button>
+                            <button className=' pb-2 pt-1 btn border-0 btn-white' onClick={()=>{setPage(totalPages)
+                            }} disabled={page>=totalPages?true:false}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-chevron-double-right" viewBox="0 0 16 16">
+                                    <path fillRule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708"/>
+                                    <path fillRule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708"/>
+                                </svg>
+                            </button>
 
-            <div className='float-end bg-white pagi-width rounded'>
-                <div className='p-1 d-flex'>
-                    <button className=' pb-2 pt-1 btn btn-white border-0' onClick={()=>{setPage(1)
-                    }} disabled={page<2?true:false}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-chevron-double-left" viewBox="0 0 16 16">
-                            <path fillRule="evenodd" d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
-                            <path fillRule="evenodd" d="M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
-                        </svg>
-                    </button>
-                    <button className=' pb-2 pt-1 btn border-0 btn-white' onClick={()=>{setPage((prev)=>prev-1)
-                    }} disabled={page<2?true:false}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-chevron-left" viewBox="0 0 16 16">
-                            <path fillRule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
-                        </svg>
-                    </button>
-                    <button className=' pb-2 pt-1 btn border-0 btn-white' onClick={()=>{setPage(1)
-                    }} disabled={page==1?true:false}>
-                        1
-                    </button>
-                    <button className=' pb-2 pt-1 btn border-0 btn-white' onClick={()=>{setPage(2)
-                    }} disabled={page==2?true:false}>
-                        2
-                    </button>
-                    <button className=' pb-2 pt-1 btn border-0 btn-white' onClick={()=>{setPage(3)
-                    }} disabled={page==3?true:false}>
-                        3
-                    </button>
-                    <div className=' pb-2 pt-1 px-3 btn btn-white '>
-                        ...
+                        </div>
                     </div>
-                    <button className=' pb-2 pt-1 btn border-0 btn-white' onClick={()=>{setPage((prev)=>prev+1)
-                    }} disabled={page>=totalPages?true:false}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-chevron-right" viewBox="0 0 16 16">
-                            <path fillRule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
-                        </svg>
-                    </button>
-                    <button className=' pb-2 pt-1 btn border-0 btn-white' onClick={()=>{setPage(totalPages)
-                    }} disabled={page>=totalPages?true:false}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-chevron-double-right" viewBox="0 0 16 16">
-                            <path fillRule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708"/>
-                            <path fillRule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708"/>
-                        </svg>
-                    </button>
-
-                </div>
-            </div>
-            <br /><br /><br /><br /><br />
+                    <br /><br /><br />
+                </>
+            ) }
         
         </div>
 

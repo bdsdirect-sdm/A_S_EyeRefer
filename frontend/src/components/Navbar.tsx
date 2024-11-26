@@ -3,11 +3,18 @@ import { Link, useNavigate } from 'react-router-dom'
 import logo from '../Assets/title_logo.webp';
 import '../Styling/Navbar.css';
 
+export let Logout:any;
+
 const Navbar:React.FC = () => {
     const navigate = useNavigate();
     const firstname = localStorage.getItem('firstname');
     const lastname = localStorage.getItem('lastname');
-    // const profile = localStorage.getItem('profile');
+    // const profile = localStorage.getItem('profile')
+  
+    Logout = () =>{
+      localStorage.clear()
+      navigate('/login');
+    }
 
     const [dropdownVisible, setDropdownVisible] = useState(false);
 
@@ -66,10 +73,7 @@ const Navbar:React.FC = () => {
               <Link to='/update-password' className="dropdown-item">
                 Change password
               </Link>
-              <button className="dropdown-item" onClick={()=>{
-                localStorage.clear()
-                navigate('/login');
-              }} >
+              <button className="dropdown-item" onClick={Logout} >
                 Logout
               </button>
               

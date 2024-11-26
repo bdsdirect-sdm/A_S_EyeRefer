@@ -1,10 +1,11 @@
 import {Server} from 'socket.io'
 import { joinRoom, sendMessage } from './event'
 
+export let io:Server
 
 export const setSocket = (httpServer:any) => {
 
-    const io = new Server(httpServer,{
+    io = new Server(httpServer,{
         cors: {
             origin: "*",
             methods: ["GET", "POST", "PUT"],
