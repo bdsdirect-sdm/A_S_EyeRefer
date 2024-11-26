@@ -18,11 +18,12 @@ export const setSocket = (httpServer:any) => {
         
         socket.on('joinchat', async(data:any)=>{
             joinRoom(socket, data);
-        })
+        });
 
-        socket.on('send_messsage', async(message:any) => {
+        socket.on('send_message', async(message:any) => {
+            console.log(message);
             sendMessage(socket, message);
-        })
+        });
         
         socket.on('disconnect', ()=>{
             console.log('Client disconnected');

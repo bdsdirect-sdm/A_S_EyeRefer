@@ -1,4 +1,3 @@
-import { Response } from "express";
 import User from "../models/User";
 import Chat from "../models/Chat";
 import { io } from "./socket";
@@ -6,7 +5,7 @@ import Room from "../models/Room";
 
 export const joinRoom = async(socket:any, data:any) => {
     try{
-            console.log(data);
+            // console.log(data);
             const room = await Room.findOne({where:{ user_id_1:data.user1,
                 user_id_2:data.user2, patient_id:data.patient }});
 
@@ -24,11 +23,11 @@ export const joinRoom = async(socket:any, data:any) => {
                 {
                     model:Room,
                     as:'room'
-                }]
+                }],
+                order:[['createdAt','ASC']]
             });
 
                 if(chats){
-                    const roomid:any = room.uuid
                     io.to(`room-${room.uuid}`).emit('prev_msg', chats);
                     io.to(`room-${room?.uuid}`).emit('getRoom', room.uuid);
                 } else {
@@ -49,6 +48,7 @@ export const joinRoom = async(socket:any, data:any) => {
 
 export const sendMessage = async(socket:any, message:any) => {
     try{
+        console.log("\n\nMessage", message);
             const chat = await Chat.create({message: message.message,
                 room_id: message.room, sender_id: message.sender,
                 receiver_id: message.receiver});
