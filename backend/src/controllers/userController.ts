@@ -2,7 +2,6 @@ import { Local } from "../environment/env";
 import Address from "../models/Address";
 import Patient from "../models/Patient";
 import Appointment from "../models/Appointment";
-import Chat from "../models/Chat";
 import Room from "../models/Room";
 import sendOTP from "../utils/mailer";
 import User from "../models/User";
@@ -744,3 +743,38 @@ export const updateforgetedPassword = async(req:any, res:Response) => {
         res.status(500).json({"message": err});
     }
 }
+
+ export const getRooms = async(req:any, res:Response) => {
+    try{
+        const {uuid} = req.user;
+        const user = await User.findByPk(uuid);
+        if(user){
+            const rooms = await Room.findAll({where:{
+                [Op.or]:[
+                    {user_id_1: {[Op.like]: `%${user.uuid}%`}},
+                    {user_id_2:{[Op.like]: `%${user.uuid}%`}}]
+            },
+            include: [
+                {
+                    model: User,
+                    as: 'doc1'
+                },
+                {
+                    model: User,
+                    as: 'doc2'
+                },
+                {
+                    model: Patient,
+                    as: 'patient'
+                }
+            ]
+        });
+        res.status(200).json({"room":rooms, "user":user});
+        } else {
+            res.status(404).json({"message": "You're not authorized"});
+        }
+    }
+    catch(err){
+        res.status(500).json({"message": err});
+    }
+ }

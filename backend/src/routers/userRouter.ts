@@ -3,9 +3,8 @@ import { registerUser, loginUser, verifyUser, getUser, getDocList,
     getPatientList, addPatient, addAddress, updatePassword, updateProfile,
     getPatient, deletePatient, updatePatient, updateAddress, addAppointment,
     updateAppointment, deleteAddress, getAppointmentList, 
-    getAppointment,
-    forgetPasswordOTP,
-    updateforgetedPassword} from "../controllers/userController";
+    getAppointment, forgetPasswordOTP, updateforgetedPassword,
+    getRooms } from "../controllers/userController";
 import userAuthMiddleware from "../middlewares/userAuth";
 import signupValidation from "../middlewares/formValidation.ts/signupValidation";
 import loginValidation from "../middlewares/formValidation.ts/loginValidation";
@@ -44,5 +43,9 @@ router.delete('/delete-address/:addressId', userAuthMiddleware, deleteAddress);
 
 router.post('/forgetPasswordOTP', forgetPasswordOTP);
 router.put('/updateforgetedPassword', updateforgetedPassword);
+
+// Chat API's
+
+router.get('room-list', userAuthMiddleware, getRooms)
 
 export default router;
