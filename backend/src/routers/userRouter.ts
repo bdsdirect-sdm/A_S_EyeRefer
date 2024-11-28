@@ -46,6 +46,6 @@ router.put('/updateforgetedPassword', updateforgetedPassword);
 
 // Chat API's
 
-router.get('room-list', userAuthMiddleware, getRooms)
+router.get('/room-list', userAuthMiddleware, getRooms)
 
 export default router;

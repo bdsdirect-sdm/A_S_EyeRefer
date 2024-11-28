@@ -751,8 +751,8 @@ export const updateforgetedPassword = async(req:any, res:Response) => {
         if(user){
             const rooms = await Room.findAll({where:{
                 [Op.or]:[
-                    {user_id_1: {[Op.like]: `%${user.uuid}%`}},
-                    {user_id_2:{[Op.like]: `%${user.uuid}%`}}]
+                    {user_id_1: user.uuid},
+                    {user_id_2: user.uuid}]
             },
             include: [
                 {
