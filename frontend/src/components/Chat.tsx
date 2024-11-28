@@ -13,10 +13,13 @@ const socket = io("http://localhost:4000/");
 const Chat: React.FC = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
-  const chatdata = JSON.parse(localStorage.getItem("chatdata") || "{}");
+  const doctype = localStorage.getItem('doctype');
+  var chatdata = JSON.parse(localStorage.getItem("chatdata") || "{}");
   const [messages, setMessages] = useState<any[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const direct = Object.keys(chatdata).length;
+  const pname = localStorage.getItem('pname');
+  const dname = localStorage.getItem('dname');
 
   useEffect(() => {
     if (!token) {
@@ -39,8 +42,7 @@ const Chat: React.FC = () => {
     
     return () => {
       localStorage.removeItem("chatdata");
-      // socket.disconnect();
-      socket.off('prev_msg');
+      socket.off("prev_msg");
     };
   }, []);
 
@@ -51,8 +53,7 @@ const Chat: React.FC = () => {
           Authorization: `Bearer ${token}`
         }
       });
-      console.log(response)
-      return response;
+      return response.data;
     }
     catch(err:any){
       toast.error(err.response.data.message)
@@ -75,6 +76,23 @@ const Chat: React.FC = () => {
       setMessages((prev: any) => [...prev, data]);
     });
   }, [socket]);
+  
+
+  const openChat = (patient: any, doc1: any, doc2: any, user: any, pfirstname:string, plastname:string, dname:any) => {
+    const chatData = { patient, user1: doc1, user2: doc2, user };
+    localStorage.setItem("chatdata", JSON.stringify(chatData));
+    const n = `${pfirstname} ${plastname}`;
+    localStorage.setItem("pname", n);
+    localStorage.setItem('dname', dname);
+    
+    setMessages([]);
+
+    socket.emit("joinchat", chatData);
+  };    
+
+
+
+console.log("boom-------->", chatdata);
 
   const sendMessage = async () => {
     if (newMessage.trim() === "") {
@@ -114,7 +132,8 @@ const Chat: React.FC = () => {
       </>
   )
   }
-
+  console.log(pname);
+  console.log("ssss", messages);
   console.log("------>", rooms);
   return (
     <>
@@ -127,10 +146,34 @@ const Chat: React.FC = () => {
               placeholder="Search Patient"
             />
             <div className="chat-patient-list">
-              <div className="patient-item active">
-                <h5>Room name</h5>
-                <p>Sujal Anand</p>
-              </div>
+              {rooms?.room?.map((room:any)=>(
+                <>
+                  <div className="patient-item active mb-2" onClick={()=>{
+                    var dname:any;
+                    if(room.doc1.uuid === rooms.user.uuid){
+                      dname = `${room.doc2.firstname} ${room.doc2.lastname}`
+                    }else{
+                      dname = `${room.doc1.firstname} ${room.doc1.lastname}`
+                    }
+                    openChat(room?.patient?.uuid, room?.doc1?.uuid, room?.doc2?.uuid, rooms?.user?.uuid, room?.patient?.firstname, room?.patient?.lastname, dname)
+                    }} >
+                    <h5>{room.name}</h5>
+                    <p>{ room.doc1.uuid != rooms.user.uuid && (
+                      <>
+                        {room.doc1.firstname} {room.doc1.lastname}
+                      </>
+                    ) }
+
+                      { room.doc2.uuid != rooms.user.uuid && (
+                      <>
+                        {room.doc2.firstname} {room.doc2.lastname}
+                      </>
+                    ) }
+                    </p>
+                  </div>
+                </>
+              ))}
+
             </div>
           </div>
 
@@ -140,12 +183,11 @@ const Chat: React.FC = () => {
               <div className="chat-main">
                 {/* Header */}
                 <div className="chat-header">
-                  <h4>ÍJFF</h4>
-                  <p>Referred To: Sujal Anand</p>
+                  <h4>{pname}</h4>
                 </div>
 
                 {/* Messages */}
-                <div className="chat-messages">
+                <div className="chat-messages mb-5">
                   {messages.map((msg: any, index: number) => (
                     <div
                       key={index}
@@ -155,8 +197,10 @@ const Chat: React.FC = () => {
                           : "chat-received"
                       }`}
                     >
+                      <p>{msg.sender_id === chatdata.user && (<><span className="sendername">You</span></>)}</p>
+                      <p>{msg.sender_id != chatdata.user && (<><span className="sendername">{dname}</span></>)}</p>
                       <p>{msg.message}</p>
-                      <span className="message-timestamp">19 days ago</span>
+                      <span className="message-timestamp"> {msg.createdAt.split("T")[0]} </span>
                     </div>
                   ))}
                 </div>
@@ -187,7 +231,6 @@ const Chat: React.FC = () => {
             </>
           )}
         </div>
-  
     </>
   );
 };
