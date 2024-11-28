@@ -6,11 +6,6 @@
     margin-right: -19px;
     background-color: #f5f5f5;
   }
-
-  .sendername{
-    font-size: 14px;
-    color: #6c757d;
-  }
   
   /* Sidebar */
   .chat-sidebar {
@@ -40,7 +35,8 @@
   }
   
   .patient-item.active {
-    background-color: #e9faff;
+    background-color: #99c4ad;
+    /* background-color: #e9faff; */
   }
   
   .patient-item h5 {
@@ -100,7 +96,7 @@
     align-self: flex-end;
     margin-left: auto;
     text-align: right;
-    background-color: #d4f8e8;
+    background-color: #b8dacb;
     color: black;
   }
   

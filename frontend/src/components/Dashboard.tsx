@@ -78,6 +78,7 @@ const Dashboard:React.FC = () => {
             user:user,
             roomname: `${firstname} ${lastname}`
         };
+        localStorage.setItem("pname", chatdata.roomname);
         localStorage.setItem('chatdata', JSON.stringify(chatdata));
         navigate('/chat')
         return;
@@ -115,9 +116,9 @@ const Dashboard:React.FC = () => {
         <div>
             <p >Dashboard</p>
 
-            <div className='d-flex dash-box justify-content-between' >
+            <div className='d-flex flex-wrap dash-card dash-box justify-content-between' >
                 
-                <div className='bg-white chng-pointer pt-2 rounded-1 w-25' onClick={()=>{
+                <div className='bg-white chng-pointer pt-2 rounded-1' onClick={()=>{
                     navigate('/patient');
                 }}>
                     <div className='d-flex'>
@@ -143,7 +144,7 @@ const Dashboard:React.FC = () => {
                     </div>
                 </div>
 
-                <div className='bg-white chng-pointer pt-2 rounded-1 w-25' onClick={()=>{
+                <div className='bg-white chng-pointer pt-2 rounded-1' onClick={()=>{
                     navigate('/doctor');
                 }}>
                     <div className='d-flex'>

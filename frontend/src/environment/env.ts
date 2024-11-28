@@ -21,6 +21,7 @@ interface config{
     DELETE_APPOINTMENT: string;
     VIEW_APPOINTMENT: string;
     GET_ROOM: string;
+    GET_STAFF_LIST: string
 }
 
 export const Local:config = {
@@ -53,5 +54,7 @@ export const Local:config = {
     GET_APPOINTMENT_LIST: import.meta.env.VITE_GET_APPOINTMENT_LIST,
     VIEW_APPOINTMENT: import.meta.env.VITE_VIEW_APPOINTMENT,
 
-    GET_ROOM: import.meta.env.VITE_GET_ROOM
+    GET_ROOM: import.meta.env.VITE_GET_ROOM,
+
+    GET_STAFF_LIST: import.meta.env.VITE_GET_STAFF_LIST
 }
