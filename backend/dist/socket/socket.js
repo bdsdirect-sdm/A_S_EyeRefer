@@ -25,7 +25,8 @@ const setSocket = (httpServer) => {
         socket.on('joinchat', (data) => __awaiter(void 0, void 0, void 0, function* () {
             (0, event_1.joinRoom)(socket, data);
         }));
-        socket.on('send_messsage', (message) => __awaiter(void 0, void 0, void 0, function* () {
+        socket.on('send_message', (message) => __awaiter(void 0, void 0, void 0, function* () {
+            console.log(message);
             (0, event_1.sendMessage)(socket, message);
         }));
         socket.on('disconnect', () => {

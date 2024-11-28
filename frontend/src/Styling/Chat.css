@@ -35,7 +35,8 @@
   }
   
   .patient-item.active {
-    background-color: #e9faff;
+    background-color: #99c4ad;
+    /* background-color: #e9faff; */
   }
   
   .patient-item h5 {
@@ -95,7 +96,7 @@
     align-self: flex-end;
     margin-left: auto;
     text-align: right;
-    background-color: #d4f8e8;
+    background-color: #b8dacb;
     color: black;
   }
   

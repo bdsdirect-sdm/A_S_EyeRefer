@@ -11,7 +11,6 @@ const Header:React.FC = () => {
       navigate('/login')
       Logout();
     }
-
   },[])
   return (
 

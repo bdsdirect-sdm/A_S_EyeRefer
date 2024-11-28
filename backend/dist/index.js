@@ -21,7 +21,7 @@ exports.httpServer = (0, http_1.createServer)(app);
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use("/", userRouter_1.default);
-db_1.default.sync().then(() => {
+db_1.default.sync({ alter: true }).then(() => {
     console.log('Database connected');
     exports.httpServer.listen(env_1.Local.SERVER_PORT, () => {
         console.log(`Server is running on port ${env_1.Local.SERVER_PORT}`);

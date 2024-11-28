@@ -22,6 +22,7 @@ class User extends Model{
     public deleted_at!: Date;
     public status!: boolean;
     public Addresses!: string
+    public user_id!: string
     }
 
 User.init({

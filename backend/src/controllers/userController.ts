@@ -4,6 +4,7 @@ import Patient from "../models/Patient";
 import Appointment from "../models/Appointment";
 import Room from "../models/Room";
 import sendOTP from "../utils/mailer";
+import Staff from "../models/Staff";
 import User from "../models/User";
 import { Response } from 'express';
 import jwt from "jsonwebtoken";
@@ -179,14 +180,12 @@ export const getDocList = async(req:any, res:Response) => {
                     include: Address
                 });
             }
-            // console.log("Listing", docList.rows);
             const b = docList.rows.map((doc)=>{
                 if(doc.Addresses.length != 0){
                     return doc;
                 }
                 return false;
             })
-            console.log("Listing", b);
             if(docList){
                 res.status(200).json({"docList":b, "totaldocs": docList.count, "message":"Docs List Found"});
             }
@@ -206,7 +205,6 @@ export const getDocList = async(req:any, res:Response) => {
                     return doc
                 }
             })
-            // console.log("Listing", docList);
             
             if(docList){
                 res.status(200).json({"docList":docList, "message":"Docs List Found"});
@@ -731,7 +729,6 @@ export const forgetPasswordOTP = async(req:any, res:Response) => {
 export const updateforgetedPassword = async(req:any, res:Response) => {
     try{
         const { email, password } = req.body;
-        console.log("\n\n data", req.body, "\n\n")
         const user = await User.findOne({where:{email:email}});
         if(user){
             const hashedPassword = await bcrypt.hash(password, 10);
@@ -744,7 +741,7 @@ export const updateforgetedPassword = async(req:any, res:Response) => {
     }
 }
 
- export const getRooms = async(req:any, res:Response) => {
+export const getRooms = async(req:any, res:Response) => {
     try{
         const {uuid} = req.user;
         const user = await User.findByPk(uuid);
@@ -777,4 +774,77 @@ export const updateforgetedPassword = async(req:any, res:Response) => {
     catch(err){
         res.status(500).json({"message": err});
     }
- }
+}
+
+export const getStaffList = async(req:any, res:Response) => {
+    try{
+        const {uuid} = req.user;
+        const page = parseInt(req.query.page);
+        const limit = parseInt(req.query.limit);
+        const search = req.query.find;
+        const offset = limit*(page-1)
+        
+        const user = await User.findByPk(uuid);
+        if(user){
+            const staffs = await Staff.findAll({
+                where: {
+                  [Op.and]: [
+                    { user_id: uuid },
+                    {
+                      [Op.or]: [
+                        { firstname: { [Op.like]: `%${search}%` } },
+                        { lastname: { [Op.like]: `%${search}%` } },
+                      ],
+                    },
+                  ],
+                },
+                limit,
+                offset,
+              });
+
+            const totalStaff = await Staff.count({where:{user_id:uuid}});
+
+            res.status(200).json({"staff":staffs, "totalStaff": totalStaff });
+        } else {
+            res.status(404).json({"message": "You're not authorized"});
+        }
+    }
+    catch(err){
+        res.status(500).json({"message": err});
+    }
+}
+
+export const addStaff = async(req:any, res:Response) => {
+    try{
+        const {uuid} = req.user;
+        const { firstname, lastname, email, phone, gender } = req.body;
+
+        const user = await User.findByPk(uuid);
+        if(user){
+            const staff = await Staff.create({firstname, lastname, email, phone, gender, user_id: user.uuid});
+            if(staff){
+                res.status(201).json({"message": "Staff Added Successfully"});
+            } else {
+                res.status(500).json({"message": "Failed to add staff"});
+            }
+        } else {
+            res.status(404).json({"message": "You're not authorized"});
+        }
+    }
+    catch(err){
+        res.status(500).json({"message": "something went wrong"});
+    }
+}
+export const deleteStaff = async(req:any, res:Response) => {
+    try{
+        const { staff_uuid } = req.params;
+        const staff = await Staff.findByPk(staff_uuid);
+        if(staff){
+            await staff.destroy()
+            res.status(200).json({"message": "Staff deleted successfully"});
+        }
+    }
+    catch(err){
+        res.status(500).json({"message": "something went wrong"});
+    }
+}

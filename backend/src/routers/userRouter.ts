@@ -4,7 +4,7 @@ import { registerUser, loginUser, verifyUser, getUser, getDocList,
     getPatient, deletePatient, updatePatient, updateAddress, addAppointment,
     updateAppointment, deleteAddress, getAppointmentList, 
     getAppointment, forgetPasswordOTP, updateforgetedPassword,
-    getRooms } from "../controllers/userController";
+    getRooms, getStaffList, addStaff, deleteStaff } from "../controllers/userController";
 import userAuthMiddleware from "../middlewares/userAuth";
 import signupValidation from "../middlewares/formValidation.ts/signupValidation";
 import loginValidation from "../middlewares/formValidation.ts/loginValidation";
@@ -46,6 +46,8 @@ router.put('/updateforgetedPassword', updateforgetedPassword);
 
 // Chat API's
 
-router.get('/room-list', userAuthMiddleware, getRooms)
-
+router.get('/room-list', userAuthMiddleware, getRooms);
+router.get('/staff-list', userAuthMiddleware, getStaffList);
+router.post('/add-staff', userAuthMiddleware, addStaff);
+router.delete('/delete-staff/:staff_uuid', userAuthMiddleware, deleteStaff);
 export default router;

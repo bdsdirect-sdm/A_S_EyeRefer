@@ -12,12 +12,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateforgetedPassword = exports.forgetPasswordOTP = exports.updateAppointment = exports.addAppointment = exports.getAppointmentList = exports.getAppointment = exports.deleteAddress = exports.updateAddress = exports.deletePatient = exports.updatePatient = exports.getPatient = exports.updateProfile = exports.updatePassword = exports.addAddress = exports.addPatient = exports.getPatientList = exports.getDocList = exports.getUser = exports.loginUser = exports.verifyUser = exports.registerUser = void 0;
+exports.addStaff = exports.getStaffs = exports.getRooms = exports.updateforgetedPassword = exports.forgetPasswordOTP = exports.updateAppointment = exports.addAppointment = exports.getAppointmentList = exports.getAppointment = exports.deleteAddress = exports.updateAddress = exports.deletePatient = exports.updatePatient = exports.getPatient = exports.updateProfile = exports.updatePassword = exports.addAddress = exports.addPatient = exports.getPatientList = exports.getDocList = exports.getUser = exports.loginUser = exports.verifyUser = exports.registerUser = void 0;
 const env_1 = require("../environment/env");
 const Address_1 = __importDefault(require("../models/Address"));
 const Patient_1 = __importDefault(require("../models/Patient"));
 const Appointment_1 = __importDefault(require("../models/Appointment"));
+const Room_1 = __importDefault(require("../models/Room"));
 const mailer_1 = __importDefault(require("../utils/mailer"));
+const Staff_1 = __importDefault(require("../models/Staff"));
 const User_1 = __importDefault(require("../models/User"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const sequelize_1 = require("sequelize");
@@ -745,3 +747,78 @@ const updateforgetedPassword = (req, res) => __awaiter(void 0, void 0, void 0, f
     }
 });
 exports.updateforgetedPassword = updateforgetedPassword;
+const getRooms = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { uuid } = req.user;
+        const user = yield User_1.default.findByPk(uuid);
+        if (user) {
+            const rooms = yield Room_1.default.findAll({ where: {
+                    [sequelize_1.Op.or]: [
+                        { user_id_1: user.uuid },
+                        { user_id_2: user.uuid }
+                    ]
+                },
+                include: [
+                    {
+                        model: User_1.default,
+                        as: 'doc1'
+                    },
+                    {
+                        model: User_1.default,
+                        as: 'doc2'
+                    },
+                    {
+                        model: Patient_1.default,
+                        as: 'patient'
+                    }
+                ]
+            });
+            res.status(200).json({ "room": rooms, "user": user });
+        }
+        else {
+            res.status(404).json({ "message": "You're not authorized" });
+        }
+    }
+    catch (err) {
+        res.status(500).json({ "message": err });
+    }
+});
+exports.getRooms = getRooms;
+const getStaffs = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { uuid } = req.user;
+        const user = yield User_1.default.findByPk(uuid);
+        if (user) {
+            const staffs = yield User_1.default.findAll({ where: { user_id: user.uuid } });
+        }
+        else {
+            res.status(404).json({ "message": "You're not authorized" });
+        }
+    }
+    catch (err) {
+        res.status(500).json({ "message": err });
+    }
+});
+exports.getStaffs = getStaffs;
+const addStaff = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { uuid } = req.user;
+        const { firstname, lastname, email, phone, gender } = req.body;
+        const user = yield User_1.default.findByPk(uuid);
+        if (user) {
+            const staff = yield Staff_1.default.create({ firstname, lastname, email, phone, gender, user_id: user.uuid });
+            if (staff) {
+                res.status(201).json({ "staff": staff, "message": "Staff Added" });
+            }
+            else {
+                res.status(500).json({ "message": "Failed to add staff" });
+            }
+        }
+        else {
+            res.status(404).json({ "message": "You're not authorized" });
+        }
+    }
+    catch (err) {
+    }
+});
+exports.addStaff = addStaff;
