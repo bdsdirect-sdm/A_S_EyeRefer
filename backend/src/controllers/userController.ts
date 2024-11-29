@@ -10,6 +10,7 @@ import { Response } from 'express';
 import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
 import bcrypt from 'bcrypt';
+import Notification from "../models/Notification";
 
 const Security_Key:any = Local.SECRET_KEY;
 // const checkPassword = async() => {
@@ -99,6 +100,7 @@ export  const loginUser = async (req:any, res:Response) =>{
 
 export const getUser = async (req:any, res:Response) => {
     try{
+        await Notification.findAll();
         const {uuid} = req.user;
         const user = await User.findOne({where:{uuid:uuid}, include:Address});
         if(user){
@@ -835,6 +837,7 @@ export const addStaff = async(req:any, res:Response) => {
         res.status(500).json({"message": "something went wrong"});
     }
 }
+
 export const deleteStaff = async(req:any, res:Response) => {
     try{
         const { staff_uuid } = req.params;

@@ -59,3 +59,14 @@ export const sendMessage = async(socket:any, message:any) => {
         console.log(err);
     }
 }
+
+export const Notificationsocket = async(socket:any, notification:any) => {
+    try{
+        console.log(notification);
+         
+
+    }
+    catch(err){
+        console.log(err);
+    }
+}

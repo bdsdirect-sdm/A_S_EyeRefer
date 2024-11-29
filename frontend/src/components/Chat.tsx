@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import io from "socket.io-client";
-import "../Styling/Chat.css";
-import '../Styling/Dashboard.css';
+import { useNavigate } from "react-router-dom";
+import { Local } from "../environment/env";
 import { toast } from "react-toastify";
 import api from "../api/axiosInstance";
-import { Local } from "../environment/env";
+// import io from "socket.io-client";
+import '../Styling/Dashboard.css';
+import "../Styling/Chat.css";
+import Socket from "../socket/socketConn";
 
-const socket = io("http://localhost:4000/");
+const socket = Socket;
 
 const Chat: React.FC = () => {
   const navigate = useNavigate();

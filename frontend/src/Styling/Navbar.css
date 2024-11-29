@@ -5,6 +5,10 @@
     z-index: 3;
     padding: 10px 20px;
   }
+
+  .notification-icon{
+    margin-left: 700px;
+  }
   
   .navbar-brand {
     color: #fff;

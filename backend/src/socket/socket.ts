@@ -1,5 +1,5 @@
 import {Server} from 'socket.io'
-import { joinRoom, sendMessage } from './event'
+import { joinRoom, sendMessage, Notificationsocket } from './event'
 
 export let io:Server
 
@@ -24,6 +24,10 @@ export const setSocket = (httpServer:any) => {
             console.log(message);
             sendMessage(socket, message);
         });
+
+        socket.on('notification', async(notification:any)=>{
+            Notificationsocket(socket, notification);
+        })
         
         socket.on('disconnect', ()=>{
             console.log('Client disconnected');

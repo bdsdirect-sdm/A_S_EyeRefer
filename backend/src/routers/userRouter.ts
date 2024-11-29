@@ -47,6 +47,8 @@ router.put('/updateforgetedPassword', updateforgetedPassword);
 // Chat API's
 
 router.get('/room-list', userAuthMiddleware, getRooms);
+
+
 router.get('/staff-list', userAuthMiddleware, getStaffList);
 router.post('/add-staff', userAuthMiddleware, addStaff);
 router.delete('/delete-staff/:staff_uuid', userAuthMiddleware, deleteStaff);
