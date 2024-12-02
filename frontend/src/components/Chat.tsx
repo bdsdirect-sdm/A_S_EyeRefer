@@ -19,6 +19,8 @@ const Chat: React.FC = () => {
   const [newMessage, setNewMessage] = useState("");
   const direct = Object.keys(chatdata).length;
   const pname = localStorage.getItem('pname');
+  const [search, setSearch] = useState('');
+  const [Input, setInput] = useState('');
 
   useEffect(() => {
     if (!token) {
@@ -45,9 +47,9 @@ const Chat: React.FC = () => {
     };
   }, []);
 
-  const getRooms = async() => {
+  const getRooms = async(search:any) => {
     try{
-      const response = await api.get(`${Local.GET_ROOM}`, {
+      const response = await api.get(`${Local.GET_ROOM}?search=${search}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -59,9 +61,14 @@ const Chat: React.FC = () => {
     }
   }
 
+  // const { data:rooms, error, isLoading, isError } = useQuery({
+  //   queryKey: ["rooms"],
+  //   queryFn: getRooms
+  // })
+
   const { data:rooms, error, isLoading, isError } = useQuery({
-    queryKey: ["rooms"],
-    queryFn: getRooms
+    queryKey: ["rooms", search],
+    queryFn: ()=>getRooms(search)
   })
 
   useEffect(() => {
@@ -136,12 +143,20 @@ console.log("boom-------->", chatdata);
   return (
     <>
         <div className="chat-layout">
-          {/* Sidebar */}
+          
           <div className="chat-sidebar">
             <input
               type="text"
               className="search-bar"
               placeholder="Search Patient"
+              value={Input}
+              onChange={(e:any)=> setInput(e.target.value)}
+              onKeyDown={(e:any)=>{
+                if(e.key === 'Enter'){
+                  setSearch(Input);
+                  setInput("");
+                }
+              }}
             />
             <div className="chat-patient-list">
               {rooms?.room?.map((room:any)=>(
@@ -171,14 +186,13 @@ console.log("boom-------->", chatdata);
 
           {direct != 0 && (
             <>
-            {/* Chatbar */}
+
               <div className="chat-main">
-                {/* Header */}
+
                 <div className="chat-header">
                   <h4>{pname}</h4>
                 </div>
 
-                {/* Messages */}
                 <div className="chat-messages mb-5">
                   {messages.map((msg: any, index: number) => (
                     <>
@@ -198,7 +212,6 @@ console.log("boom-------->", chatdata);
                   ))}
                 </div>
 
-                {/* Input */}
                 <div className="chat-input-container">
                   <input
                     type="text"

@@ -1,18 +1,18 @@
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../Assets/title_logo.webp';
-import Socket from '../socket/socketConn';
-import React, { useEffect, useState } from 'react';
+// import Socket from '../socket/socketConn';
+import React, { useState } from 'react';
 import '../Styling/Navbar.css';
 
 export let Logout:any;
 
-const socket = Socket;
+// const socket = Socket;
 
 const Navbar:React.FC = () => {
     const navigate = useNavigate();
     const firstname = localStorage.getItem('firstname');
     const lastname = localStorage.getItem('lastname');
-    const [count, setCount] = useState(0);
+    // const [count, setCount] = useState(0);
 
     // useEffect(()=>{
     //   socket.on('getnotificationcount', (count:any)=>{

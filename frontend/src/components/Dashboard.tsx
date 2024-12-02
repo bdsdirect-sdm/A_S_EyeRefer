@@ -216,18 +216,16 @@ const Dashboard:React.FC = () => {
                                     <td> -- </td>
                                 ))}
                                 <td> {patient.referedto.firstname} {patient.referedto.lastname} </td>
-                                {(patient.patientId != null && patient.patientId.status == 1 && (
-                                    <td> Scheduled </td>
+                                {( patient.referalstatus == 1 && (
+                                    <td>fff</td>
                                 ))}
-                                {(patient.patientId != null && patient.patientId.status == 2 && (
-                                    <td> Cancelled </td>
+                                {( patient.referalstatus == 0 && (
+                                    <td>ss</td>
                                 ))}
-                                {(patient.patientId != null && patient.patientId.status == 3 && (
-                                    <td> Complete </td>
+                                {( patient.referalstatus == 3 && (
+                                    <td>ddd</td>
                                 ))}
-                                {(patient.patientId == null && (
-                                    <td> -- </td>
-                                ))}
+
                                 <td> <Link to="#" onClick={()=>{alert("Under Process")}} >Yes</Link> </td>
                                 {patient.referback && (
                                     <td>Yes</td>
@@ -239,9 +237,8 @@ const Dashboard:React.FC = () => {
                                     directChat(patient.uuid, patient.referedby.uuid, patient.referedto.uuid, data?.data.user.uuid, patient.firstname, patient.lastname);
                                 }} >Link</p> </td>
                                 <td>
-                                    <div className='dashboard-eye ms-2 pt-1 rounded-1' >
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-eye text-light" viewBox="0 0 16 16"
-                                        onClick={()=>{viewNavigator(patient.uuid)}}>
+                                    <div className='dashboard-eye ms-2 pt-1 rounded-1' onClick={()=>{viewNavigator(patient.uuid)}} >
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-eye text-light" viewBox="0 0 16 16">
                                             <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
                                             <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
                                         </svg>

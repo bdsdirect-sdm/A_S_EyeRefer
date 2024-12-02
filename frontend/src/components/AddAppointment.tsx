@@ -105,7 +105,7 @@ const AddAppointment:React.FC = () => {
           {()=>(
             <Form>
               <div className="form-group">
-                <label>patient</label>
+                <label>patient Name</label>
                 <Field as='select' name='patient' className='form-select'>
                 <option value="" disabled></option>
                 {data.patientList.map(( patient:any )=>(

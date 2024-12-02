@@ -98,6 +98,7 @@
     text-align: right;
     background-color: #b8dacb;
     color: black;
+    width: fit-content;
   }
   
   .chat-received {
@@ -105,6 +106,7 @@
     background-color: #ffffff;
     border: 1px solid #dee2e6;
     color: black;
+    width: fit-content;
   }
   
   .message-timestamp {

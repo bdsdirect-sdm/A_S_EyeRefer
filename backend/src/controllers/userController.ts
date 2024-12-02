@@ -746,12 +746,39 @@ export const updateforgetedPassword = async(req:any, res:Response) => {
 export const getRooms = async(req:any, res:Response) => {
     try{
         const {uuid} = req.user;
+        const search = req.query.search
         const user = await User.findByPk(uuid);
         if(user){
-            const rooms = await Room.findAll({where:{
-                [Op.or]:[
-                    {user_id_1: user.uuid},
-                    {user_id_2: user.uuid}]
+        //     const rooms = await Room.findAll({where:{
+        //         [Op.or]:[
+        //             {user_id_1: user.uuid},
+        //             {user_id_2: user.uuid}]
+        //     },
+        //     include: [
+        //         {
+        //             model: User,
+        //             as: 'doc1'
+        //         },
+        //         {
+        //             model: User,
+        //             as: 'doc2'
+        //         },
+        //         {
+        //             model: Patient,
+        //             as: 'patient'
+        //         }
+        //     ]
+        // });
+        
+        const rooms = await Room.findAll({where:
+            {
+                [Op.and]:[
+                    {name: { [Op.like]: `%${search}%`}},
+                    {[Op.or]:[
+                        {user_id_1: user.uuid},
+                        {user_id_2: user.uuid}
+                    ]}
+                ]
             },
             include: [
                 {
@@ -768,6 +795,7 @@ export const getRooms = async(req:any, res:Response) => {
                 }
             ]
         });
+
         res.status(200).json({"room":rooms, "user":user});
         } else {
             res.status(404).json({"message": "You're not authorized"});
@@ -851,3 +879,4 @@ export const deleteStaff = async(req:any, res:Response) => {
         res.status(500).json({"message": "something went wrong"});
     }
 }
+
