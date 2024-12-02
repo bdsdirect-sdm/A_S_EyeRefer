@@ -48,7 +48,6 @@ export const joinRoom = async(socket:any, data:any) => {
 
 export const sendMessage = async(socket:any, message:any) => {
     try{
-        console.log("\n\nMessage", message);
             const chat = await Chat.create({message: message.message,
                 room_id: message.room, sender_id: message.sender,
                 receiver_id: message.receiver});

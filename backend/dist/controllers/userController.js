@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addStaff = exports.getStaffs = exports.getRooms = exports.updateforgetedPassword = exports.forgetPasswordOTP = exports.updateAppointment = exports.addAppointment = exports.getAppointmentList = exports.getAppointment = exports.deleteAddress = exports.updateAddress = exports.deletePatient = exports.updatePatient = exports.getPatient = exports.updateProfile = exports.updatePassword = exports.addAddress = exports.addPatient = exports.getPatientList = exports.getDocList = exports.getUser = exports.loginUser = exports.verifyUser = exports.registerUser = void 0;
+exports.deleteStaff = exports.addStaff = exports.getStaffList = exports.getRooms = exports.updateforgetedPassword = exports.forgetPasswordOTP = exports.updateAppointment = exports.addAppointment = exports.getAppointmentList = exports.getAppointment = exports.deleteAddress = exports.updateAddress = exports.deletePatient = exports.updatePatient = exports.getPatient = exports.updateProfile = exports.updatePassword = exports.addAddress = exports.addPatient = exports.getPatientList = exports.getDocList = exports.getUser = exports.loginUser = exports.verifyUser = exports.registerUser = void 0;
 const env_1 = require("../environment/env");
 const Address_1 = __importDefault(require("../models/Address"));
 const Patient_1 = __importDefault(require("../models/Patient"));
@@ -24,6 +24,7 @@ const User_1 = __importDefault(require("../models/User"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const sequelize_1 = require("sequelize");
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const Notification_1 = __importDefault(require("../models/Notification"));
 const Security_Key = env_1.Local.SECRET_KEY;
 // const checkPassword = async() => {
 // }
@@ -107,6 +108,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.loginUser = loginUser;
 const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        yield Notification_1.default.findAll();
         const { uuid } = req.user;
         const user = yield User_1.default.findOne({ where: { uuid: uuid }, include: Address_1.default });
         if (user) {
@@ -187,16 +189,14 @@ const getDocList = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                     include: Address_1.default
                 });
             }
-            // console.log("Listing", docList.rows);
             const b = docList.rows.map((doc) => {
                 if (doc.Addresses.length != 0) {
                     return doc;
                 }
                 return false;
             });
-            console.log("Listing", b);
             if (docList) {
-                res.status(200).json({ "docList": b, "totaldocs": docList.count, "message": "Docs List Found" });
+                res.status(200).json({ "docList": b, "totaldocs": b.length, "message": "Docs List Found" });
             }
             else {
                 res.status(404).json({ "message": "MD List Not Found" });
@@ -215,7 +215,6 @@ const getDocList = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                     return doc;
                 }
             });
-            // console.log("Listing", docList);
             if (docList) {
                 res.status(200).json({ "docList": docList, "message": "Docs List Found" });
             }
@@ -734,7 +733,6 @@ exports.forgetPasswordOTP = forgetPasswordOTP;
 const updateforgetedPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email, password } = req.body;
-        console.log("\n\n data", req.body, "\n\n");
         const user = yield User_1.default.findOne({ where: { email: email } });
         if (user) {
             const hashedPassword = yield bcrypt_1.default.hash(password, 10);
@@ -750,12 +748,36 @@ exports.updateforgetedPassword = updateforgetedPassword;
 const getRooms = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { uuid } = req.user;
+        const search = req.query.search;
         const user = yield User_1.default.findByPk(uuid);
         if (user) {
+            //     const rooms = await Room.findAll({where:{
+            //         [Op.or]:[
+            //             {user_id_1: user.uuid},
+            //             {user_id_2: user.uuid}]
+            //     },
+            //     include: [
+            //         {
+            //             model: User,
+            //             as: 'doc1'
+            //         },
+            //         {
+            //             model: User,
+            //             as: 'doc2'
+            //         },
+            //         {
+            //             model: Patient,
+            //             as: 'patient'
+            //         }
+            //     ]
+            // });
             const rooms = yield Room_1.default.findAll({ where: {
-                    [sequelize_1.Op.or]: [
-                        { user_id_1: user.uuid },
-                        { user_id_2: user.uuid }
+                    [sequelize_1.Op.and]: [
+                        { name: { [sequelize_1.Op.like]: `%${search}%` } },
+                        { [sequelize_1.Op.or]: [
+                                { user_id_1: user.uuid },
+                                { user_id_2: user.uuid }
+                            ] }
                     ]
                 },
                 include: [
@@ -784,12 +806,32 @@ const getRooms = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getRooms = getRooms;
-const getStaffs = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getStaffList = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { uuid } = req.user;
+        const page = parseInt(req.query.page);
+        const limit = parseInt(req.query.limit);
+        const search = req.query.find;
+        const offset = limit * (page - 1);
         const user = yield User_1.default.findByPk(uuid);
         if (user) {
-            const staffs = yield User_1.default.findAll({ where: { user_id: user.uuid } });
+            const staffs = yield Staff_1.default.findAll({
+                where: {
+                    [sequelize_1.Op.and]: [
+                        { user_id: uuid },
+                        {
+                            [sequelize_1.Op.or]: [
+                                { firstname: { [sequelize_1.Op.like]: `%${search}%` } },
+                                { lastname: { [sequelize_1.Op.like]: `%${search}%` } },
+                            ],
+                        },
+                    ],
+                },
+                limit,
+                offset,
+            });
+            const totalStaff = yield Staff_1.default.count({ where: { user_id: uuid } });
+            res.status(200).json({ "staff": staffs, "totalStaff": totalStaff });
         }
         else {
             res.status(404).json({ "message": "You're not authorized" });
@@ -799,7 +841,7 @@ const getStaffs = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(500).json({ "message": err });
     }
 });
-exports.getStaffs = getStaffs;
+exports.getStaffList = getStaffList;
 const addStaff = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { uuid } = req.user;
@@ -808,7 +850,7 @@ const addStaff = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (user) {
             const staff = yield Staff_1.default.create({ firstname, lastname, email, phone, gender, user_id: user.uuid });
             if (staff) {
-                res.status(201).json({ "staff": staff, "message": "Staff Added" });
+                res.status(201).json({ "message": "Staff Added Successfully" });
             }
             else {
                 res.status(500).json({ "message": "Failed to add staff" });
@@ -819,6 +861,21 @@ const addStaff = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
     }
     catch (err) {
+        res.status(500).json({ "message": "something went wrong" });
     }
 });
 exports.addStaff = addStaff;
+const deleteStaff = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { staff_uuid } = req.params;
+        const staff = yield Staff_1.default.findByPk(staff_uuid);
+        if (staff) {
+            yield staff.destroy();
+            res.status(200).json({ "message": "Staff deleted successfully" });
+        }
+    }
+    catch (err) {
+        res.status(500).json({ "message": "something went wrong" });
+    }
+});
+exports.deleteStaff = deleteStaff;

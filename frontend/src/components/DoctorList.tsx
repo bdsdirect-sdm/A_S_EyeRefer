@@ -76,9 +76,15 @@ const DoctorList:React.FC = () => {
     <table className="table">
   <thead>
     <tr>
-      <th scope="col"> Name </th>
-      <th scope="col"> email </th>
-      <th scope="col"> Doctor Type </th>
+      <th scope="col">Doctor Name </th>
+      <th scope="col"> Referral Placed </th>
+      <th scope="col"> Referral Completed </th>
+      <th scope="col"> Avg. Time Of Contact </th>
+      <th scope="col"> Avg. Time Of Consultation </th>
+      <th scope="col"> Phone </th>
+      <th scope="col"> Email </th>
+      <th scope="col"> Type </th>
+      <th scope="col"> Action </th>
     </tr>
   </thead>
   <tbody>
@@ -88,8 +94,14 @@ const DoctorList:React.FC = () => {
         <>
           <tr key={doctor.uuid} >
             <td>{doctor.firstname} {doctor.lastname}</td>
+            <td>A</td>
+            <td>B</td>
+            <td>C</td>
+            <td>D</td>
+            <td>E</td>
             <td> {doctor.email} </td>
             <td> {doctor.doctype==1 && ("MD")} {doctor.doctype==2 && ("OD")} </td>
+            <td>F</td>
 
           </tr>
         </>

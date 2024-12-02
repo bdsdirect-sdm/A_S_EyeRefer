@@ -172,12 +172,12 @@ const Dashboard:React.FC = () => {
             <div className='d-flex  mt-4'>
                 <h5 className='mt-2' > Referral Patient </h5>
                 {localStorage.getItem('doctype') == '2' && (
-                    <button type="button" className=' add-refer-btn btn' onClick={()=>{
+                    <button type="button" className=' add-refer-btn text-white btn' onClick={()=>{
                         navigate('/add-patient');
                     }} >+ Add Referral Patient </button>
                 )}
                 {localStorage.getItem('doctype') == '1' && (
-                    <button type="button" className=' add-refer-btn btn' onClick={()=>{
+                    <button type="button" className=' add-refer-btn text-white btn' onClick={()=>{
                         navigate('/add-appointment');
                     }} >+ Add Appointment </button>
                 )}

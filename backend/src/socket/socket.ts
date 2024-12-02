@@ -21,7 +21,7 @@ export const setSocket = (httpServer:any) => {
         });
 
         socket.on('send_message', async(message:any) => {
-            console.log(message);
+            
             sendMessage(socket, message);
         });
 

@@ -182,14 +182,15 @@ export const getDocList = async(req:any, res:Response) => {
                     include: Address
                 });
             }
+            let docCount = docList.count
             const b = docList.rows.map((doc)=>{
                 if(doc.Addresses.length != 0){
+                    docCount = docCount-1;
                     return doc;
                 }
-                return false;
             })
             if(docList){
-                res.status(200).json({"docList":b, "totaldocs": docList.count, "message":"Docs List Found"});
+                res.status(200).json({"docList":b, "totaldocs": docCount, "message":"Docs List Found"});
             }
             else{
                 res.status(404).json({"message":"MD List Not Found"});

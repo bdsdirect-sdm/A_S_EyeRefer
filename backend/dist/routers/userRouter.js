@@ -37,6 +37,7 @@ router.post('/forgetPasswordOTP', userController_1.forgetPasswordOTP);
 router.put('/updateforgetedPassword', userController_1.updateforgetedPassword);
 // Chat API's
 router.get('/room-list', userAuth_1.default, userController_1.getRooms);
-router.get('/staff-list', userAuth_1.default, userController_1.getStaffs);
+router.get('/staff-list', userAuth_1.default, userController_1.getStaffList);
 router.post('/add-staff', userAuth_1.default, userController_1.addStaff);
+router.delete('/delete-staff/:staff_uuid', userAuth_1.default, userController_1.deleteStaff);
 exports.default = router;

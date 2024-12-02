@@ -26,8 +26,10 @@ const setSocket = (httpServer) => {
             (0, event_1.joinRoom)(socket, data);
         }));
         socket.on('send_message', (message) => __awaiter(void 0, void 0, void 0, function* () {
-            console.log(message);
             (0, event_1.sendMessage)(socket, message);
+        }));
+        socket.on('notification', (notification) => __awaiter(void 0, void 0, void 0, function* () {
+            (0, event_1.Notificationsocket)(socket, notification);
         }));
         socket.on('disconnect', () => {
             console.log('Client disconnected');
