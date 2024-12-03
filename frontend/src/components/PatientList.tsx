@@ -128,7 +128,7 @@ const { data, isError:isUserError, error:userError, isLoading:userLoading } = us
     <>
           <div>
             
-            <div className='d-flex  mt-4'>
+            <div className='d-flex '>
                 <h5 className='mt-2' > Referral Patient </h5>
                 {localStorage.getItem('doctype') == '2' && (
                     <button type="button" className=' add-refer-btn text-white btn' onClick={()=>{

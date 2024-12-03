@@ -67,7 +67,6 @@ const UpdateProfile:React.FC = () => {
       localStorage.setItem('lastname', data.lastname);
       toast.success(`${response.data.message}`);
       navigate("/profile")
-      location.reload();
     }
     catch(err:any){
       toast.error(`${err.response.data.message}`);

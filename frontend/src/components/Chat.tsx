@@ -204,7 +204,9 @@ console.log("boom-------->", chatdata);
                         : "chat-received"
                         }`}
                         >
-                      <p>{msg.message}</p>
+                      <p>{msg.message} <br />
+                        <span className="msg-time text-secondary" > {msg.createdAt.split('T')[1].split('.')[0].split(':')[0]}:{msg.createdAt.split('T')[1].split('.')[0].split(':')[1]} </span>
+                      </p>
                       <span className="message-timestamp"> {msg.createdAt.split("T")[0]} </span>
                     </div>
                     <br />
@@ -219,8 +221,13 @@ console.log("boom-------->", chatdata);
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     placeholder="Type a message..."
+                    onKeyDown={(e:any) => {
+                      if(e.key === "Enter"){
+                        document.getElementById('send-msg')?.click();
+                      }
+                    }}
                   />
-                  <button className="chat-send-button" onClick={sendMessage}>
+                  <button className="chat-send-button" id="send-msg" onClick={sendMessage}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="16"
