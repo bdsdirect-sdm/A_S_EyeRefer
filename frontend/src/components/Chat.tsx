@@ -210,6 +210,8 @@ console.log("boom-------->", chatdata);
                       <span className="message-timestamp"> {msg.createdAt.split("T")[0]} </span>
                     </div>
                     <br />
+                    <span id="bottom" ></span>
+                    
                       </>
                   ))}
                 </div>
