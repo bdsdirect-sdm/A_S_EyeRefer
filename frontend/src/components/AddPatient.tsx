@@ -61,10 +61,10 @@ const AddPatient: React.FC = () => {
     laterality: Yup.string().required("laterality is required"),
     timing: Yup.string().required("Timing is required"),
     company: Yup.string().required("Company name is reuired"),
-    starting_date: Yup.date().max(new Date, "Invalid Date"),
-    expiry_date: Yup.date().min(new Date, "Invalid Date"),
-    document: Yup.mixed(),
-    note: Yup.string(),
+    starting_date: Yup.date().max(new Date, "Invalid Date").required("Starting Date is required"),
+    expiry_date: Yup.date().min(new Date, "Invalid Date").required("Exipry Date is required"),
+    document: Yup.mixed().notRequired(),
+    note: Yup.string().notRequired(),
     referedto: Yup.string().required("Select Doctor"),
     gender: Yup.string().required("Gender is required"),
     address: Yup.string().required("Address is required"),
@@ -75,7 +75,17 @@ const AddPatient: React.FC = () => {
   });
 
   const referPatientHandler = (values: any) => {
-    patientMutate.mutate(values);
+    const data = {
+      "firstname": values.firstname,
+      "lastname": values.lastname,
+      "disease": values.disease,
+      'email': values.email,
+      'referback': values.referback,
+      "referedto": values.referedto,
+      'address': values.address
+    }
+    console.log(data);
+    patientMutate.mutate(data);
   };
 
   if (isLoading) {
@@ -115,13 +125,14 @@ const AddPatient: React.FC = () => {
           dob: '',
           email: '',
           phone: '',
-          referback: ''
+          referback: 0
         }}
         validationSchema={validationSchema}
         onSubmit={referPatientHandler}
       >
-        {({ values }) => (
+        {({ values, setFieldValue }) => (
           <Form>
+
             <div className='bg-white' >
               
               <div className='mb-5' >
@@ -210,10 +221,12 @@ const AddPatient: React.FC = () => {
                       </label>
                       <div className='d-flex' >
                         <span className='text-secondary mx-2' >no</span>
-                        <Field type="checkbox" name="referback" className="form-check-input py-2 ms-1" 
+                        <Field
+                          type="checkbox"
+                          name="referback"
+                          className="form-check-input py-2 ms-1"
                           id="flexSwitchCheckChecked"
-                          checked={values.referback}
-                          /> 
+                          onChange={(e:any) => setFieldValue("referback", e.target.checked)}/> 
                         <span className='text-secondary mx-2 ' >yes</span>
                       </div>
                         <ErrorMessage
@@ -273,28 +286,67 @@ const AddPatient: React.FC = () => {
               
               </div>
 
-              <div>
-                <h5 className='ms-3' >Insurance Details</h5>
+              <div className='mb-5' >
+                <h5 className='ms-4' >Insurance Details</h5>
                 
-                <div>
-                <div className="form-group w-25">
-                      <label>Company</label>
-                      <Field as='select' name='company' className='form-select'>
-                        <option value="" disabled>Choose Company</option>
-                        {['INS-A', 'INS-B', 'INS-C', 'INS-D', 'INS-E'].map(company => (
-                          <option key={company} value={company}>{company}</option>
-                        ))}
-                      </Field>
-                      <ErrorMessage name="company" component="div" className="text-danger" />
-                    </div>
+                <div className='row justify-content-evenly d-flex mx-3' >
+                  <div className="form-group w-25 col">
+                    <label>Company</label>
+                    <Field as='select' name='company' className='form-select'>
+                      <option value="" disabled>Choose Company</option>
+                      {['INS-A', 'INS-B', 'INS-C', 'INS-D', 'INS-E'].map(company => (
+                      <option key={company} value={company}>{company}</option>
+                      ))}
+                    </Field>
+                    <ErrorMessage name="company" component="div" className="text-danger" />
+                  </div>
+
+                  <div className="form-group w-25 col">
+                    <label>Policy Start Date</label>
+                    <Field type='date' name='starting_date' className='form-control' />
+                    <ErrorMessage name="starting_date" component="div" className="text-danger" />
+                  </div>
+                  
+                  <div className="form-group w-25 col">
+                    <label>Policy Expiry Date</label>
+                    <Field type='date' name='expiry_date' className='form-control' />
+                    <ErrorMessage name="expiry_date" component="div" className="text-danger" />
+                  </div>
+
                 </div>
               </div>
 
-              <div>
-                <div></div>
+              <div className='mb-5' >
+                <h5 className='ms-4' >Documentation</h5>
+                
+                <div className='mx-3 row ' >
+                  <div className='w-25 col ' >
+                    <label htmlFor="document"> Upload Medical Document </label>
+                    <input type="file" id="document" name="document" className="form-control"
+                    onChange={(e:any) => setFieldValue('document', e.target.files[0]) } />
+                  </div>
+                </div>
+
               </div>
-            
+
+              <div className='mb-3' >
+                <div className='mx-4' >
+                  <label htmlFor="note">Note</label>
+                  <textarea id="note" name="note" className="form-control" placeholder='Type here' rows={3}
+                  onChange={(e:any) => setFieldValue('note', e.target.value)} />
+                </div>
+              </div>
+
+              <div className='d-flex mx-4 ' >
+                <button type="submit" className='btn btn-info mx-2 px-4 text-white ' >Submit</button>
+                <button type="button" className='btn btn-outline-success mx-2 px-4' onClick={()=>{
+                  navigate('/dashboard')
+                }} >Cancel</button>
+              
+              </div>
+              <br /><br />
             </div>
+            <br /><br /><br /><br /><br />
           </Form>
         )}
       </Formik>

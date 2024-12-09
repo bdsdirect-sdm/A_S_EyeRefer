@@ -354,11 +354,11 @@ export const addPatient = async(req:any, res:Response) => {
         const user = await User.findOne({where:{uuid:uuid}});
         if(user){
             await user.update({totalrefered: user.totalrefered + 1});
-            const {firstname, lastname, disease, address, referedto, referback } = req.body;
+            const {firstname, lastname, disease, address, referedto, referback, email } = req.body;
             const Md = await User.findByPk(referedto);
             await Md?.update({totalreferalreceive: Md.totalreferalreceive + 1});
 
-            const patient = await Patient.create({ firstname, lastname, disease, address, referedto, referback, referedby:uuid });
+            const patient = await Patient.create({ firstname, lastname, email, disease, address, referedto, referback, referedby:uuid });
             if(patient){
                 res.status(200).json({"message": "Patient added Successfully"});
             }
