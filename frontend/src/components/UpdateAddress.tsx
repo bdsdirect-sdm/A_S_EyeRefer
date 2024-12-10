@@ -79,52 +79,57 @@ const UpdateAddress:React.FC = () => {
 
     >
         {()=>(
-            <Form>
-                <div className="form-group">
-                    <label>State</label>
-                    <Field type="text" name="state" className="form-control" />
-                    <ErrorMessage name="state" component="div" className="text-danger" />
-                </div>
-                <br />
+            <>
+            <h5 className='mb-4' >Edit Address</h5>
+            <div className='bg-white p-5 rounded' >
+                <Form>
+                    <div className="form-group">
+                        <label>State</label>
+                        <Field type="text" name="state" className="form-control" />
+                        <ErrorMessage name="state" component="div" className="text-danger" />
+                    </div>
+                    <br />
 
-                <div className="form-group">
-                    <label>Street</label>
-                    <Field type="text" name="street" className="form-control" />
-                    <ErrorMessage name="street" component="div" className="text-danger" />
-                </div>
-                <br />
+                    <div className="form-group">
+                        <label>Street</label>
+                        <Field type="text" name="street" className="form-control" />
+                        <ErrorMessage name="street" component="div" className="text-danger" />
+                    </div>
+                    <br />
 
-                <div className="form-group">
-                    <label>City</label>
-                    <Field type="text" name="city" className="form-control" />
-                    <ErrorMessage name="city" component="div" className="text-danger" />
-                </div>
-                <br />
+                    <div className="form-group">
+                        <label>City</label>
+                        <Field type="text" name="city" className="form-control" />
+                        <ErrorMessage name="city" component="div" className="text-danger" />
+                    </div>
+                    <br />
 
-                <div className="form-group">
-                    <label>District</label>
-                    <Field type="text" name="district" className="form-control" />
-                    <ErrorMessage name="district" component="div" className="text-danger" />
-                </div>
-                <br />
+                    <div className="form-group">
+                        <label>District</label>
+                        <Field type="text" name="district" className="form-control" />
+                        <ErrorMessage name="district" component="div" className="text-danger" />
+                    </div>
+                    <br />
 
-                <div className="form-group">
-                    <label>Phone</label>
-                    <Field type="text" name="phone" className="form-control" />
-                    <ErrorMessage name="phone" component="div" className="text-danger" />
-                </div>
-                <br />
+                    <div className="form-group">
+                        <label>Phone</label>
+                        <Field type="text" name="phone" className="form-control" />
+                        <ErrorMessage name="phone" component="div" className="text-danger" />
+                    </div>
+                    <br />
 
-                <div className="form-group">
-                    <label>Pincode</label>
-                    <Field type="number" name="pincode" className="form-control" />
-                    <ErrorMessage name="pincode" component="div" className="text-danger" />
-                </div>
-                <br />
+                    <div className="form-group">
+                        <label>Pincode</label>
+                        <Field type="number" name="pincode" className="form-control" />
+                        <ErrorMessage name="pincode" component="div" className="text-danger" />
+                    </div>
+                    <br />
 
-                <button type="submit" className="btn btn-primary">Update</button>
+                    <button type="submit" className="btn btn-primary px-4 py-2 mt-2 ">Update</button>
 
-            </Form>
+                </Form>
+            </div>
+            </>
         )}
     </Formik>
   )

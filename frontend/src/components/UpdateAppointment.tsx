@@ -46,7 +46,8 @@ const UpdateAppointment:React.FC = () => {
   const validationSchema = Yup.object().shape({
     patient: Yup.string().required(),
     date: Yup.date().min(new Date(), "Don't select past date").required("Appointment Date is required"),
-    type: Yup.string().required("Type is required")
+    type: Yup.string().required("Type is required"),
+    note: Yup.string().notRequired()
   });
 
   const updateAppointment = async(data:any) => {
@@ -99,42 +100,61 @@ const UpdateAppointment:React.FC = () => {
     <Formik
     initialValues={{
       patient: appointment.appointment.patientId.uuid,
-      date: null,
-      type: appointment.appointment.type
+      date: appointment.appointment.date,
+      type: appointment.appointment.type,
+      note:''
       }}
       validationSchema={validationSchema}
       onSubmit={submitHandler}>
         {()=>(
-          <Form>
-            <div className="form-group">
-                <label>patient</label>
-                <Field type="text" name="patient" className="form-control" hidden />
-                  <input type="text" value={`${appointment.appointment.patientId.firstname} ${appointment.appointment.patientId.lastname}`} className='form-control' disabled/>
-                <ErrorMessage name="patient" component="div" className="text-danger"/>
-              </div>
-              <br />
+          <>
+          <h5 className='mb-4' >Reschedule Appointment</h5>
+          <div className='bg-white p-5 rounded' >
+            <h5 className='mb-4' >Basic information</h5>
+            <Form >
 
-              <div className="form-group">
-                <label>Appointment Date</label>
-                <Field type="date" name="date" className="form-control" />
-                <ErrorMessage name="date" component="div" className="text-danger"/>
-              </div>
-              <br />
+              <div className='row' >
 
-              <div className="form-group">
-                <label>Type</label>
-                <Field as='select' name='type' className='form-select'>
-                <option value="" disabled> select type </option>
-                <option value="1">Surgery</option>
-                <option value="2">Consultation</option>
+                <div className="form-group col">
+                  <label>patient Name</label>
+                  <Field type='text' name='patient' className='form-control' hidden />
+                  <input type='text' name='patient' value={`${appointment.appointment.patientId.firstname} ${appointment.appointment.patientId.lastname}`} className='form-control' disabled />
+                  <ErrorMessage name="patient" component="div" className="text-danger"/>
+                </div>
+
+                <div className="form-group col">
+                  <label>Appointment Date</label>
+                  <Field type="date" name="date" className="form-control"/>
+                  <ErrorMessage name="date" component="div" className="text-danger"/>
+                </div>
                 
-              </Field>
-                <ErrorMessage name="type" component="div" className="text-danger"/>
+                <div className="form-group col">
+                  <label>Type</label>
+                  <Field as='select' name='type' className='form-select'>
+                    <option value="" disabled> select type </option>
+                    <option value="1">Surgery</option>
+                    <option value="2">Consultation</option>
+                  </Field>
+                  <ErrorMessage name="type" component="div" className="text-danger"/>
+                </div>
+
               </div>
-              <br />
+
+              <div className='row'>
+                <div className="form-group col">
+                  <label>Note</label>
+                  <Field as='textarea' name='note' placeholder='Type here' rows={3} className='form-control' />
+                  <ErrorMessage name="note" component="div"  className="text-danger" />
+                </div>
+              </div>
               
-              <button type="submit" className="btn btn-dark">Submit</button>
-          </Form>
+              <div className='row' >
+                <button type="submit" className="btn btn-info text-white col-2 py-2 ms-3 mt-3 ">Submit</button>
+              </div>
+
+            </Form>
+          </div> 
+          </>
         )}
     </Formik>
     </>

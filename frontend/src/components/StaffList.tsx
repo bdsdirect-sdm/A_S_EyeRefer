@@ -79,13 +79,11 @@ const StaffList:React.FC = () => {
   return (
     <div >
       
-      <button type='button' className='btn btn-primary float-end px-5 me-3 mb-1' onClick={()=>{navigate('/add-staff')}} >Add Staff</button>
-      <br /><br />
+        <h5 className=' mb-4'>Staff</h5>
 
       
-      <div className='d-flex bg-white' >
-        <h6 className='px-3 pt-3 pb-0'>Staff</h6>
-        <div className='d-flex ms-auto' >
+      <div className='d-flex bg-white pb-3' >
+        <div className='d-flex' >
         <input className='form-control w-100 border border-dark mt-3 mx-3 p-2' type="search" placeholder='Search' name="find" value={Input} onChange={(e:any)=>{setInput(e.target.value)}} />
         
         {(Input.length!=0) && (
@@ -99,6 +97,8 @@ const StaffList:React.FC = () => {
           >Search</button>
         )}
         </div>
+        
+        <button type='button' className='btn btn-primary ms-auto me-4 mt-3 p-2 px-5 ' onClick={()=>{navigate('/add-staff')}} >Add Staff</button>
       </div>
     <table className="table">
   <thead>

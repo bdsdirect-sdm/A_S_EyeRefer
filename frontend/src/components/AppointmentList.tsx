@@ -90,7 +90,6 @@ const AppointmentList: React.FC = () => {
     <table className="table">
   <thead>
     <tr>
-      <th scope="col">#</th>
       <th scope="col">Patient Name</th>
       <th scope="col">Date</th>
       <th scope="col">Type</th>
@@ -101,10 +100,9 @@ const AppointmentList: React.FC = () => {
     </tr>
   </thead>
   <tbody>
-    {data?.appointments?.map((appointment:any,index:number) =>(
+    {data?.appointments?.map((appointment:any) =>(
       <>
       <tr>
-        <td className='fw-bold' > {index+1} </td>
         <td>{appointment?.patientId.firstname} {appointment?.patientId.lastname}</td>
         <td> {appointment?.date} </td>
         <td> {appointment.type == 1 && ("Surgery")} {appointment.type == 2 && ("Consultation")} </td>

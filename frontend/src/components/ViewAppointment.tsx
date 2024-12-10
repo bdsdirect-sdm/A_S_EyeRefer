@@ -63,26 +63,38 @@ const ViewAppointment:React.FC = () => {
 
   return (
     <>
-    <div className="container">
-        <div className="row">
-            <div className="col-md-12">
-                <h1 className='mb-4' >Appointment Details</h1>
-                <div className="card">
-                    <div className="card-body">
-                        <h5 className="card-title">Patient Name: {data.appointment.patientId.firstname} {data.appointment.patientId.lastname} </h5>
-                    </div>
+    <div className='bg-white mt-5 p-4' >
+      <h4 className='ms-3' >Appointment Details</h4>
 
-                    <div className="card-body">
-                        <h5 className="card-title"> Appointment Date: {data.appointment.date}</h5>
-                    </div>
-                    
-                    <div className="card-body">
-                        <h5 className="card-title"> Appointment Type: {data.appointment.type == 1 && ("Surgery")} {data.appointment.type == 2 && ("Consultation") } </h5>
-                    </div>
-                    
-                </div>
-            </div>
+      <div>
+        <div className='bg-secondary-subtle row mt-3 py-4 rounded mx-2 ' >
+          <div className='col' >
+            <b>Patient Name: </b> <span> {data.appointment.patientId.firstname} </span>
+          </div>
+
+          <div className='col' >
+            <b>Type : </b> <span> {data.appointment.type==1 && ("Surgery")} {data.appointment.type==2 && ("Consultation")} </span>
+          </div>
+          
+          <div className='col' >
+            <b>Appointment Date: </b> <span> {data.appointment.date} </span>
+          </div>
         </div>
+
+        <div className='row' >
+          <div className='my-4 ' >
+            <b>Notes</b>
+          </div>
+          
+          <div className='bg-secondary-subtle mt-2 row py-4 rounded ms-3 ' style={
+            {width: '75vw'}
+          } >
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum pariatur culpa totam voluptas voluptatibus ipsa sequi unde hic libero dolorem alias doloremque quas voluptate, adipisci eligendi dignissimos. Ullam, repellat quisquam?</p>
+          </div>
+        </div>
+
+      </div>
+
     </div>
     </>
   )

@@ -109,6 +109,9 @@ const UpdateProfile:React.FC = () => {
     validationSchema={validationSchema}
     onSubmit={updateHandler}>
       {()=> (
+        <>
+        <h5 className='mb-4' >Edit Profile</h5>
+        <div className='bg-white p-5 rounded mb-5' >
         <Form>
           <div className="form-group">
             <label>First Name:</label>
@@ -150,8 +153,10 @@ const UpdateProfile:React.FC = () => {
           </div>
 
 
-          <button type="submit" className="btn btn-primary">Update</button>
+          <button type="submit" className="btn btn-primary px-4 py-2 mt-4">Update</button>
         </Form>
+        </div>
+        </>
       )}
     </Formik>
       </>)

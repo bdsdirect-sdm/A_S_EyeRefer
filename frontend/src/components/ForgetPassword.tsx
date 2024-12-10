@@ -92,7 +92,7 @@ const ForgetPassword:React.FC = () => {
                 <ErrorMessage name="email" component="div" className="text-danger" />
               </div>
               <br />
-              <button type="submit" className="btn btn-info w-100 py-2">Submit</button>
+              <button type="submit" className="btn btn-info w-100 text-white py-2">Send OTP to Email</button>
               <br /><br />
               <span className='d-flex backlogin'>
                 Back to Login ? 

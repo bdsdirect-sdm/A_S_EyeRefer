@@ -64,30 +64,33 @@ const UpdatePassword:React.FC = () => {
     >
       {()=> (
         <>
-        <Form>
-        <div className="form-group">
-          <label>Current Password:</label>
-          <Field type="password" name="prevPassword" minLength={8} className="form-control"/>
-          <ErrorMessage name="prevPassword" component="div" className="text-danger"/>
-        </div>
-        <br />
+        <h5 className='mb-3' >Update Password</h5>
+        <div className='bg-white p-5 rounded' >
+          <Form>
+            <div className="form-group">
+              <label>Current Password</label>
+              <Field type="password" name="prevPassword" minLength={8} className="form-control"/>
+              <ErrorMessage name="prevPassword" component="div" className="text-danger"/>
+            </div>
+            <br />
 
-        <div className="form-group">
-          <label>New Password:</label>
-          <Field type="password" name="newPassword" minLength={8} className="form-control"/>
-          <ErrorMessage name="newPassword" component="div" className="text-danger"/>
-        </div>
-        <br />
-        
-        <div className="form-group">
-          <label>Confirm Password:</label>
-          <Field type="password" name="confirmPass" minLength={8} className="form-control"/>
-          <ErrorMessage name='confirmPass' component="div" className='text-danger' />
-        </div>
-        <br />
+            <div className="form-group">
+              <label>New Password</label>
+              <Field type="password" name="newPassword" minLength={8} className="form-control"/>
+              <ErrorMessage name="newPassword" component="div" className="text-danger"/>
+            </div>
+            <br />
+            
+            <div className="form-group">
+              <label>Confirm Password</label>
+              <Field type="password" name="confirmPass" minLength={8} className="form-control"/>
+              <ErrorMessage name='confirmPass' component="div" className='text-danger' />
+            </div>
+            <br />
 
-        <button type='submit' className='btn btn-outline-primary'>Submit</button>
-        </Form>
+            <button type='submit' className='btn btn-outline-primary px-5 py-2 '>Update</button>
+          </Form>
+        </div>
         </>
       )}
     </Formik>
