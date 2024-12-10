@@ -217,10 +217,10 @@ const Dashboard:React.FC = () => {
                                 ))}
                                 <td> {patient.referedto.firstname} {patient.referedto.lastname} </td>
                                 {( patient.referalstatus == 1 && (
-                                    <td>fff</td>
+                                    <td>Completed</td>
                                 ))}
                                 {( patient.referalstatus == 0 && (
-                                    <td>ss</td>
+                                    <td className='text-warning' > Pending </td>
                                 ))}
                                 {( patient.referalstatus == 3 && (
                                     <td>ddd</td>

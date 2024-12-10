@@ -569,8 +569,9 @@ export const deleteAddress = async(req:any, res:Response) => {
             const address = await Address.findByPk(addressId);
             if(address){
                 await address?.destroy();
-            } else {
                 res.status(200).json({"message": "Address deleted Successfully"})
+            } else {
+                res.status(404).json({"message": "Address not Found"});
             }
         } else {
             res.status(400).json({"message": "you're not authorised"});

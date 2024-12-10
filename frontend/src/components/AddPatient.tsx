@@ -84,7 +84,7 @@ const AddPatient: React.FC = () => {
       "referedto": values.referedto,
       'address': values.address
     }
-    console.log(data);
+    // console.log(data);
     patientMutate.mutate(data);
   };
 

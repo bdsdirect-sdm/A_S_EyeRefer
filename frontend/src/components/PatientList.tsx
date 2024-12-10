@@ -145,7 +145,7 @@ const { data, isError:isUserError, error:userError, isLoading:userLoading } = us
             
             <div>
               <div className='d-flex' >
-                <input className='form-control w-25 border border-dark me-3 mt-5 mb-2'  type="search" name="find" value={Input} placeholder='Search' onChange={(e:any)=>{setInput(e.target.value)}} />
+                <input className='form-control w-25 border border-dark bg-secondary-subtle me-3 mt-5 mb-2'  type="search" name="find" value={Input} placeholder='Search' onChange={(e:any)=>{setInput(e.target.value)}} />
                 {(Input.length != 0 && (
                   <button className='btn btn-outline-dark mb-2 mt-5' type="submit" 
                   onClick={(e:any)=>{
