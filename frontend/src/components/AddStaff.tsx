@@ -65,50 +65,55 @@ const AddStaff:React.FC = () => {
         validationSchema={validationSchema}
         onSubmit={submitHandler}>
           {()=>(
-            <Form>
-              <div className="form-group">
-                <label>First Name</label>
-                <Field type="text" name="firstname" placeholder="Enter First Name" className='form-control' />
-                <ErrorMessage name="firstname" component="div" className="text-danger" />
+            <>
+              <h5 className='mb-3' > Add Staff</h5>
+              <div className='bg-white p-5 mb-5 rounded' >
+                <Form>
+                  <div className="form-group">
+                    <label>First Name</label>
+                    <Field type="text" name="firstname" placeholder="Enter First Name" className='form-control' />
+                    <ErrorMessage name="firstname" component="div" className="text-danger" />
+                  </div>
+                  <br />
+
+                  <div className="form-group">
+                    <label>Last Name</label>
+                    <Field type="text" name="lastname" placeholder="Enter Last Name" className='form-control' />
+                    <ErrorMessage name="lastname" component="div" className="text-danger" />
+                  </div>
+                  <br />
+
+                  <div className="form-group">
+                    <label>Gender</label>
+                    <Field as="select" name="gender" className='form-control'>
+                      <option value="" defaultChecked disabled>Select Gender</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Others">Others</option>
+                    </Field>
+                    <ErrorMessage name="gender" component="div" className="text-danger" />
+                  </div>
+                  <br />
+
+                  <div className="form-group">
+                    <label>Email</label>
+                    <Field type="email" name="email" className="form-control" />
+                    <ErrorMessage name="email" component="div" className="text-danger" />
+                  </div>
+                  <br />
+
+                  <div className="form-group">
+                    <label>Phone:</label>
+                    <Field type="text" name="phone" maxLength={10} className="form-control" />
+                    <ErrorMessage name="phone" component="div" className="text-danger" />
+                  </div>
+
+                  <button type="submit" className='btn btn-primary px-5 py-2 mt-3' >Add Staff</button>
+                  <br /><br />
+
+                </Form>
               </div>
-              <br />
-
-              <div className="form-group">
-                <label>Last Name</label>
-                <Field type="text" name="lastname" placeholder="Enter Last Name" className='form-control' />
-                <ErrorMessage name="lastname" component="div" className="text-danger" />
-              </div>
-              <br />
-
-              <div className="form-group">
-                <label>Gender</label>
-                <Field as="select" name="gender" className='form-control'>
-                  <option value="" defaultChecked disabled>Select Gender</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Others">Others</option>
-                </Field>
-                <ErrorMessage name="gender" component="div" className="text-danger" />
-              </div>
-              <br />
-
-              <div className="form-group">
-                <label>Email</label>
-                <Field type="email" name="email" className="form-control" />
-                <ErrorMessage name="email" component="div" className="text-danger" />
-              </div>
-              <br />
-
-              <div className="form-group">
-                <label>Phone:</label>
-                <Field type="text" name="phone" maxLength={10} className="form-control" />
-                <ErrorMessage name="phone" component="div" className="text-danger" />
-              </div>
-
-              <button type="submit" className='btn btn-primary' >Add Staff</button>
-              <br /><br />
-
-            </Form>
+            </>
           )}
       </Formik>
     </div>

@@ -106,7 +106,7 @@ const AddAppointment:React.FC = () => {
 
           {()=>(
             <>
-            <h5 className='mb-4' >Appointment Details</h5>
+            <h5 className='mb-4' >Add Appointment</h5>
             <div className='bg-white p-5 rounded' >
               <h5 className='mb-4' >Basic information</h5>
               <Form >

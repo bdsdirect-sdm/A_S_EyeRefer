@@ -67,7 +67,9 @@ const AddAddress:React.FC = () => {
     >
       {()=>(
         <>
-              <Form>
+        <h5 className='mb-3' >Add New Address</h5>
+        <div className='bg-white p-4 mb-5 rounded' >
+          <Form>
                 <div className="form-group"> 
                   <label>Street</label>
                   <Field type="text" name="street" className="form-control"/>
@@ -109,8 +111,9 @@ const AddAddress:React.FC = () => {
                   <ErrorMessage name="pincode" component="div" className="text-danger"/>
                 </div>
                 <br />
-                <button type="submit" className='btn btn-outline-dark'>Submit</button>
-              </Form>
+                <button type="submit" className='btn btn-outline-primary px-4'>Submit</button>
+          </Form>
+        </div>
         </>
       )}
     </Formik>

@@ -32,6 +32,7 @@ const Login:React.FC = () => {
           localStorage.setItem('firstname', response.data.user.firstname);
           localStorage.setItem('lastname', response.data.user.lastname);
           localStorage.setItem('profile', response.data.user.profile_photo);
+          localStorage.setItem('id', response.data.user.uuid );
           toast.success("Login Successfully");
           navigate('/dashboard');
         }

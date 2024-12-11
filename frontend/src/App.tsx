@@ -1,11 +1,14 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import UpdateAppointment from './components/UpdateAppointment';
 import AppointmentList from './components/AppointmentList';
+import ViewAppointment from './components/ViewAppointment';
+import ForgetPassword from './components/ForgetPassword';
 import AddAppointment from './components/AddAppointment';
 import UpdatePassword from './components/UpdatePassword';
 import UpdateAddress from './components/UpdateAddress';
 import UpdateProfile from './components/UpdateProfile';
 import UpdatePatient from './components/UpdatePatient';
+import Notification from './components/Notification';
 import ViewPatient from './components/ViewPatient';
 import PatientList from './components/PatientList';
 import AddPatient from './components/AddPatient';
@@ -24,8 +27,6 @@ import Login from './components/Login';
 import Chat from './components/Chat';
 import react from 'react';
 import './App.css';
-import ViewAppointment from './components/ViewAppointment';
-import ForgetPassword from './components/ForgetPassword';
 
 const  App:react.FC = () => {
 
@@ -53,6 +54,10 @@ const  App:react.FC = () => {
         {
           path: '/dashboard',
           element: <Dashboard />
+        },
+        {
+          path: '/notification',
+          element: <Notification />
         },
         {
           path: '/patient',

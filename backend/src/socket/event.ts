@@ -1,7 +1,8 @@
+import Notification from "../models/Notification";
 import User from "../models/User";
 import Chat from "../models/Chat";
-import { io } from "./socket";
 import Room from "../models/Room";
+import { io } from "./socket";
 
 export const joinRoom = async(socket:any, data:any) => {
     try{
@@ -53,6 +54,19 @@ export const sendMessage = async(socket:any, message:any) => {
                 receiver_id: message.receiver});
 
             io.to(`room-${message.room}`).emit('new_message', chat);
+    }
+    catch(err){
+        console.log(err);
+    }
+}
+
+export const joinNotificationRoom = async(socket:any, user:any) => {
+    try{
+
+        socket.join(`room-${user.userId}`);
+
+        const unread = await Notification.findAndCountAll({where:{is_seen:false}});
+        io.to(`room-${user.userId}`).emit('getUnreadCount', {"unread": 2});
     }
     catch(err){
         console.log(err);
