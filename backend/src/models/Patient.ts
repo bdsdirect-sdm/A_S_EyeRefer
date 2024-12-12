@@ -14,7 +14,9 @@ class Patient extends Model{
     public referedto!: string;
     public referalstatus!: boolean;
     public referback!: boolean;
-    public patientId!: string
+    public patientId!: string;
+    public refertodoc!: string;
+    public referbydoc!: string;
     public address!: string;
     public isseen!: boolean; // 0: pending, 1: scheduled
 }

@@ -7,6 +7,7 @@ import React, { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import api from '../api/axiosInstance';
 import * as Yup from 'yup';
+import socket from '../socket/socketConn';
 
 const AddAppointment:React.FC = () => {
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ const AddAppointment:React.FC = () => {
           Authorization: `Bearer ${token}`
         }
       });
+      socket.emit('sendNotification', {'pId':data.patient, 'code':1} );
       toast.success('Appointment set Successfully');
       navigate('/appointment');
       return;
@@ -37,7 +39,7 @@ const AddAppointment:React.FC = () => {
   }
 
   const appointmentMutation = useMutation({
-    mutationFn: AddAppointment
+    mutationFn: AddAppointment,
   });
 
   const getPatients = async() => {
@@ -99,7 +101,7 @@ const AddAppointment:React.FC = () => {
         patient: '',
         appointmentdate: null,
         type: '',
-        note:''
+        note:'',
         }}
         validationSchema={validationSchema}
         onSubmit={submitHandler}>
@@ -122,9 +124,17 @@ const AddAppointment:React.FC = () => {
                       <option key={patient.uuid} value={patient.uuid}> {patient.firstname} {patient.lastname} </option>
                       </>
                     ))}
-                  </Field>
+                    </Field>
                     <ErrorMessage name="patient" component="div" className="text-danger"/>
                   </div>
+
+                  {/* {values.patient && (
+                    <div className="form-group col" hidden >
+                      <label>patient Name</label>
+                      <Field type='text' name='name' value={`${data.patientList.find((p:any)=>p.uuid==values.patient).firstname} ${data.patientList.find((p:any)=>p.uuid==values.patient).lastname}`} className='form-control' />
+                      <ErrorMessage name="name" component="div" className="text-danger"/>
+                    </div>
+                  )} */}
 
                   <div className="form-group col">
                     <label>Appointment Date</label>

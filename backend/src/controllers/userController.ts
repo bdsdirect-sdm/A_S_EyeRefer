@@ -360,7 +360,7 @@ export const addPatient = async(req:any, res:Response) => {
 
             const patient = await Patient.create({ firstname, lastname, email, disease, address, referedto, referback, referedby:uuid });
             if(patient){
-                res.status(200).json({"message": "Patient added Successfully"});
+                res.status(200).json({"message": "Patient added Successfully", 'patient': patient});
             }
         }
         else{
@@ -882,3 +882,30 @@ export const deleteStaff = async(req:any, res:Response) => {
     }
 }
 
+
+// pending
+export const getNotifications = async(req:any, res:Response) => {
+    try{
+        const {uuid} = req.user;
+        const notifications = await Notification.findAll({where:{notifyto: uuid}});
+        if(notifications){
+            res.status(200).json({"notifications":notifications, "message": "Notifications Found"});
+        } else {
+            res.status(404).json({"message": "Notifications Not Found"});
+        }
+    }
+    catch(err){
+        console.log(err)
+        res.status(500).json({"message": `Something went wrong ${err}` });
+    }
+}
+
+// pending
+export const updateNotificationStatus = (req:any, res:Response) => {
+    try{
+
+    }
+    catch(err){
+        console.log(err);
+    }
+}

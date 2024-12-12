@@ -4,7 +4,8 @@ import { registerUser, loginUser, verifyUser, getUser, getDocList,
     getPatient, deletePatient, updatePatient, updateAddress, addAppointment,
     updateAppointment, deleteAddress, getAppointmentList, 
     getAppointment, forgetPasswordOTP, updateforgetedPassword,
-    getRooms, getStaffList, addStaff, deleteStaff } from "../controllers/userController";
+    getRooms, getStaffList, addStaff, deleteStaff, getNotifications,
+    updateNotificationStatus } from "../controllers/userController";
 import userAuthMiddleware from "../middlewares/userAuth";
 import signupValidation from "../middlewares/formValidation.ts/signupValidation";
 import loginValidation from "../middlewares/formValidation.ts/loginValidation";
@@ -45,11 +46,15 @@ router.post('/forgetPasswordOTP', forgetPasswordOTP);
 router.put('/updateforgetedPassword', updateforgetedPassword);
 
 // Chat API's
-
 router.get('/room-list', userAuthMiddleware, getRooms);
 
-
+// Staff API's
 router.get('/staff-list', userAuthMiddleware, getStaffList);
 router.post('/add-staff', userAuthMiddleware, addStaff);
 router.delete('/delete-staff/:staff_uuid', userAuthMiddleware, deleteStaff);
+
+// Notification API's
+router.get('/notification-list', userAuthMiddleware, getNotifications);
+router.put('/seen-notification', userAuthMiddleware, updateNotificationStatus);
+
 export default router;

@@ -24,8 +24,8 @@ interface config{
     GET_STAFF_LIST: string;
     ADD_STAFF: string;
     DELETE_STAFF: string;
-    GET_NOTIFICATION_LIST:string;
-    COUNT_UNREAD_NOTIFICATION: string;
+    GET_NOTIFICATION_LIST: string;
+    NOTIFICATION_SEEN: string
 }
 
 export const Local:config = {
@@ -68,6 +68,6 @@ export const Local:config = {
 
 
     GET_NOTIFICATION_LIST: import.meta.env.VITE_GET_NOTIFICATION_LIST,
-    COUNT_UNREAD_NOTIFICATION: import.meta.env.VITE_COUNT_UNREAD_NOTIFICATION
+    NOTIFICATION_SEEN: import.meta.env.VITE_NOTIFICATION_SEEN
 
 }

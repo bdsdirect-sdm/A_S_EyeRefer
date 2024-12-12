@@ -6,6 +6,7 @@ import React, { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import api from '../api/axiosInstance';
 import * as Yup from 'yup';
+import socket from '../socket/socketConn';
 
 const AddPatient: React.FC = () => {
   const navigate = useNavigate();
@@ -14,12 +15,13 @@ const AddPatient: React.FC = () => {
   const addPatient = async (data: any) => {
     console.log("Data for API", data);
     try {
-      await api.post(`${Local.ADD_PATIENT}`, data, {
+      const response = await api.post(`${Local.ADD_PATIENT}`, data, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
       toast.success("Patient referred successfully");
+      socket.emit('sendNotification', {'pId':response.data.patient.uuid, 'code':2} );
       navigate('/patient');
       return;
     } catch (err: any) {
@@ -349,7 +351,7 @@ const AddPatient: React.FC = () => {
             <br /><br /><br /><br /><br />
           </Form>
         )}
-      </Formik>
+      </Formik> 
     </div>
   );
 };

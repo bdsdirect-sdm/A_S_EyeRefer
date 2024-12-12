@@ -189,14 +189,15 @@ const getDocList = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                     include: Address_1.default
                 });
             }
+            let docCount = docList.count;
             const b = docList.rows.map((doc) => {
                 if (doc.Addresses.length != 0) {
+                    docCount = docCount - 1;
                     return doc;
                 }
-                return false;
             });
             if (docList) {
-                res.status(200).json({ "docList": b, "totaldocs": b.length, "message": "Docs List Found" });
+                res.status(200).json({ "docList": b, "totaldocs": docCount, "message": "Docs List Found" });
             }
             else {
                 res.status(404).json({ "message": "MD List Not Found" });
@@ -354,12 +355,12 @@ const addPatient = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const user = yield User_1.default.findOne({ where: { uuid: uuid } });
         if (user) {
             yield user.update({ totalrefered: user.totalrefered + 1 });
-            const { firstname, lastname, disease, address, referedto, referback } = req.body;
+            const { firstname, lastname, disease, address, referedto, referback, email } = req.body;
             const Md = yield User_1.default.findByPk(referedto);
             yield (Md === null || Md === void 0 ? void 0 : Md.update({ totalreferalreceive: Md.totalreferalreceive + 1 }));
-            const patient = yield Patient_1.default.create({ firstname, lastname, disease, address, referedto, referback, referedby: uuid });
+            const patient = yield Patient_1.default.create({ firstname, lastname, email, disease, address, referedto, referback, referedby: uuid });
             if (patient) {
-                res.status(200).json({ "message": "Patient added Successfully" });
+                res.status(200).json({ "message": "Patient added Successfully", 'patient': patient });
             }
         }
         else {
@@ -568,9 +569,10 @@ const deleteAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             const address = yield Address_1.default.findByPk(addressId);
             if (address) {
                 yield (address === null || address === void 0 ? void 0 : address.destroy());
+                res.status(200).json({ "message": "Address deleted Successfully" });
             }
             else {
-                res.status(200).json({ "message": "Address deleted Successfully" });
+                res.status(404).json({ "message": "Address not Found" });
             }
         }
         else {

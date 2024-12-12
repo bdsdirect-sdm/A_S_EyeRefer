@@ -5,6 +5,7 @@ import React, { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { queryClient } from '../main';
 import api from '../api/axiosInstance';
+import socket from '../socket/socketConn';
 
 const AppointmentList: React.FC = () => {
   const navigate = useNavigate();
@@ -24,6 +25,12 @@ const AppointmentList: React.FC = () => {
           Authorization: `Bearer ${token}`
         }
       });
+      if(data.status==2){
+        socket.emit('sendNotification', {'pId':data.patient, 'code':7} );
+      }
+      else{
+        socket.emit('sendNotification', {'pId':data.patient, 'code':5} );
+      }
       localStorage.removeItem("appointmentUUID");
       queryClient.invalidateQueries({
         queryKey:["appointments"]
@@ -90,7 +97,7 @@ const AppointmentList: React.FC = () => {
     <table className="table">
   <thead>
     <tr>
-      <th scope="col">Patient Name</th>
+      <th scope="col">Patient Name</th> 
       <th scope="col">Date</th>
       <th scope="col">Type</th>
       <th scope="col">Status</th>
@@ -113,7 +120,7 @@ const AppointmentList: React.FC = () => {
             
           <b className='text-success ' onClick={()=>{
                     localStorage.setItem("appointmentUUID", appointment.uuid);
-                    updateAppointmentStatus({"status":3});
+                    updateAppointmentStatus({"status":3, 'patient': appointment.patient});
                   }}>
             Complete
           </b>        
@@ -127,7 +134,7 @@ const AppointmentList: React.FC = () => {
           
           <b className='text-danger' onClick={()=>{
                     localStorage.setItem("appointmentUUID", appointment.uuid);
-                    updateAppointmentStatus({"status":2});
+                    updateAppointmentStatus({"status":2, "patient":appointment.patient});
                   }} >
             Cancel
           </b>

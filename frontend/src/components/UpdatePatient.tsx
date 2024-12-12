@@ -6,6 +6,7 @@ import React, { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import api from '../api/axiosInstance';
 import * as Yup from 'yup';
+import socket from '../socket/socketConn';
 
 const UpdatePatient:React.FC = () => {
   const navigate = useNavigate();
@@ -81,6 +82,7 @@ const UpdatePatient:React.FC = () => {
         }
       });
       toast.success("Patient updated successfully");
+      socket.emit('sendNotification', {'pId':patientUUID, 'code':4} );
       navigate("/patient");
       return;
     }

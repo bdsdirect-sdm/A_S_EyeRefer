@@ -21,7 +21,6 @@ export const setSocket = (httpServer:any) => {
         });
 
         socket.on('send_message', async(message:any) => {
-            
             sendMessage(socket, message);
         });
 
@@ -29,9 +28,9 @@ export const setSocket = (httpServer:any) => {
             joinNotificationRoom(socket, user);
         })
 
-        // socket.on('notification', async(notification:any)=>{
-        //     Notificationsocket(socket, notification);
-        // })
+        socket.on('sendNotification', async(patient:any)=>{
+            Notificationsocket(socket, patient);
+        })
         
         socket.on('disconnect', ()=>{
             console.log('Client disconnected');

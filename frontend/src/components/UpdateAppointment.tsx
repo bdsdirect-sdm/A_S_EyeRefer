@@ -6,6 +6,7 @@ import React, { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import api from '../api/axiosInstance';
 import * as Yup from 'yup';
+import socket from '../socket/socketConn';
 
 const UpdateAppointment:React.FC = () => {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ const UpdateAppointment:React.FC = () => {
   useEffect(()=>{
     if(!token || !appointmentUUID){
       navigate('/login')
-      }
+      } 
 
     return ()=>{
       localStorage.removeItem('appointmentId');
@@ -57,6 +58,7 @@ const UpdateAppointment:React.FC = () => {
           Authorization: `Bearer ${token}`
         }
       });
+      socket.emit('sendNotification', {'pId':data.patient, 'code':3} );
       toast.success("appointment updated successfully");
       navigate("/appointment");
       return;

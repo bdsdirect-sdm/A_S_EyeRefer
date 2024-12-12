@@ -189,10 +189,10 @@ const { data, isError:isUserError, error:userError, isLoading:userLoading } = us
                                 ))}
                                 <td> {patient.referedto.firstname} {patient.referedto.lastname} </td>
                                 {( patient.referalstatus == 1 && (
-                                    <td>fff</td>
+                                    <td className='text-success' > Complete </td>
                                 ))}
                                 {( patient.referalstatus == 0 && (
-                                    <td>ss</td>
+                                    <td className='text-warning' > pending </td>
                                 ))}
                                 {( patient.referalstatus == 3 && (
                                     <td>ddd</td>
