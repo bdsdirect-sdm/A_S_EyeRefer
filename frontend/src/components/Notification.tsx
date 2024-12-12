@@ -5,15 +5,34 @@ import { toast } from 'react-toastify';
 import api from '../api/axiosInstance';
 import { Local } from '../environment/env';
 
+
+
 const Notification:React.FC = () => {
   const navigate = useNavigate()
   const token = localStorage.getItem('token');
+
+  async function setNotificationSeen(){
+    try{
+      await api.put(`${Local.NOTIFICATION_SEEN}`, {}, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+          }
+      })
+    }
+    catch(err){
+      console.log(err);
+    }
+  }
   
   useEffect(()=>{
     if(!token){
       navigate('/login');
     }
 
+    return ()=>{
+      setNotificationSeen();
+      window.location.reload();
+    }
   },[])
 
   const getNotifications = async() => {
@@ -23,7 +42,7 @@ const Notification:React.FC = () => {
           Authorization: `Bearer ${token}`
         }
       });
-      return response.data;
+      return response.data.notifications;
     }
     catch(err:any){
       toast.error(err.response.data.message);
@@ -62,17 +81,30 @@ const Notification:React.FC = () => {
     <div>
       <h5 className='m-4' >Notifications</h5>
 
-      <div className='bg-white ms-4 pt-5' >
-        <div className='px-5'>
-          <p className='mb-0'>blythe webb appointment has been completed with Dr. Sujal Anand</p>
-          <span style={{fontSize:'12px'}} >Received 3 weeks ago</span>
-          <hr />
-        </div>
-        <div className='px-5'>
-          <p className='mb-0'>blythe webb appointment has been completed with Dr. Sujal Anand</p>
-          <span style={{fontSize:'12px'}} >Received 3 weeks ago</span>
-          <hr />
-        </div>
+      <div className='bg-white ms-4 pt-5 pb-3' >
+        {data.map((notif:any)=>(
+          <>
+            {notif.is_seen==0 && (
+              <div className='px-5'>
+                <p className='mb-0'>{notif.notification}</p>
+                <span className='me-2' style={{fontSize:'12px'}} >Received 3 weeks ago</span>
+                {/* <span className='me-2' style={{fontSize:'12px'}} >{(notif.createdAt).split('T')[0]}</span>
+                <span className='ms-2' style={{fontSize:'12px'}} >{(notif.createdAt).split('T')[1].split('.')[0]}</span> */}
+                <hr />
+              </div>
+            )}
+
+            {notif.is_seen==1 && (
+              <div className='px-5'>
+                <p className='mb-0 text-secondary'>{notif.notification}</p>
+                <span className='me-2 text-secondary' style={{fontSize:'12px'}} >Received 3 weeks ago</span>
+                {/* <span className='me-2' style={{fontSize:'12px'}} >{(notif.createdAt).split('T')[0]}</span>
+                <span className='ms-2' style={{fontSize:'12px'}} >{(notif.createdAt).split('T')[1].split('.')[0]}</span> */}
+                <hr />
+              </div>
+            )}
+          </>
+        ))}
       </div>
     </div>
   )

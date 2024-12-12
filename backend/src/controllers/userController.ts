@@ -887,7 +887,7 @@ export const deleteStaff = async(req:any, res:Response) => {
 export const getNotifications = async(req:any, res:Response) => {
     try{
         const {uuid} = req.user;
-        const notifications = await Notification.findAll({where:{notifyto: uuid}});
+        const notifications = await Notification.findAll({where:{notifyto: uuid}, order:[['createdAt', 'DESC']]});
         if(notifications){
             res.status(200).json({"notifications":notifications, "message": "Notifications Found"});
         } else {
@@ -901,9 +901,17 @@ export const getNotifications = async(req:any, res:Response) => {
 }
 
 // pending
-export const updateNotificationStatus = (req:any, res:Response) => {
+export const updateNotificationStatus = async(req:any, res:Response) => {
     try{
-
+        const {uuid} = req.user;
+        const notifications = await Notification.findAll({where:{notifyto: uuid}});
+        
+        if(notifications){
+            for(let i = 0; i < notifications.length; i++){
+                const notification = notifications[i];
+                await notification.update({is_seen:1});
+            }
+        }
     }
     catch(err){
         console.log(err);

@@ -67,7 +67,8 @@ export const joinNotificationRoom = async(socket:any, user:any) => {
         socket.join(`room-${user.userId}`);
 
         const unread = await Notification.count({where:{is_seen:false, notifyto: user.userId}});
-        io.to(`room-${user.userId}`).emit('getUnreadCount', unread);
+        sendCount(user.userId, unread);
+        // io.to(`room-${user.userId}`).emit('getUnreadCount', unread);
     }
     catch(err){
         console.log(err);
@@ -104,7 +105,8 @@ export const Notificationsocket = async(socket:any, patient:any) => {
             if(addNotification){
                 const notifcount = await Notification.count({where: {is_seen: false, notifyto: getPatient?.referbydoc.uuid}});
                 io.to(`room-${getPatient?.referbydoc.uuid}`).emit('getNotification', addNotification.notification);
-                io.to(`room-${getPatient?.referbydoc.uuid}`).emit('getUnreadCount', notifcount);
+                sendCount(getPatient?.referbydoc.uuid, notifcount);
+                // io.to(`room-${getPatient?.referbydoc.uuid}`).emit('getUnreadCount', notifcount);
             }
         } else{
             if(patient.code == 2){
@@ -116,7 +118,8 @@ export const Notificationsocket = async(socket:any, patient:any) => {
             if(addNotification){
                 const notifcount = await Notification.count({where: {is_seen: false, notifyto: getPatient?.referbydoc.uuid}});
                 io.to(`room-${getPatient?.refertodoc.uuid}`).emit('getNotification', addNotification.notification);
-                io.to(`room-${getPatient?.refertodoc.uuid}`).emit('getUnreadCount', notifcount);
+                sendCount(getPatient?.refertodoc?.uuid, notifcount)
+                // io.to(`room-${getPatient?.refertodoc.uuid}`).emit('getUnreadCount', notifcount);
             }
         }
     }
@@ -125,6 +128,14 @@ export const Notificationsocket = async(socket:any, patient:any) => {
     }
 }
 
+const sendCount = (user:any, count:any) =>{
+    try{
+        io.to(`room-${user}`).emit('getUnreadCount', count);
+    }
+    catch(err){
+        console.log(err);
+    }
+}
 
 /*
 
