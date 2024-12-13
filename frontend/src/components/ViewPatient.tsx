@@ -21,6 +21,27 @@ const ViewPatient:React.FC = () => {
     }
   },[])
 
+  const DownloadPatient = async()=>{
+    try{
+      const response:any = await api.get(`${Local.DOWNLOAD_PATIENT}/${patientUUID}`, {
+        headers:{
+          'Authorization': `Bearer ${token}`
+        },
+        responseType: 'blob',
+      });
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.href = url;
+      link.download = 'patient_data.pdf';  
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+    catch(err){
+      console.log(err);
+    }
+  }
+
   const getPatient = async() => {
     try{
       const response = await api.get(`${Local.VIEW_PATIENT}/${patientUUID}`, {
@@ -64,7 +85,10 @@ const ViewPatient:React.FC = () => {
 
   return (    
     <div className='bg-white pt-3 px-4 pb-3 mb-5' >
-      <h4 className='mb-4' >Basic Information</h4>
+      <div className='d-flex mb-4 '>
+        <h4 className='mb-4' >Basic Information</h4>
+        <button type="button" className='ms-auto mb-3 btn btn-info text-white px-5' onClick={DownloadPatient} >Download Details</button>
+      </div>
 
       {/* Basic Info */}
       <div className='bg-secondary-subtle rounded-2 ps-5 mb-4' >

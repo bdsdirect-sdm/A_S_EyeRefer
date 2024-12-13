@@ -1,5 +1,5 @@
 import {Server} from 'socket.io'
-import { joinRoom, sendMessage, joinNotificationRoom, Notificationsocket } from './event'
+import { joinRoom, sendMessage, joinNotificationRoom, Notificationsocket, sendCount } from './event'
 
 export let io:Server
 
@@ -17,20 +17,25 @@ export const setSocket = (httpServer:any) => {
         console.log('Client connected');
         
         socket.on('joinchat', async(data:any)=>{
-            joinRoom(socket, data);
+            await joinRoom(socket, data);
         });
 
         socket.on('send_message', async(message:any) => {
-            sendMessage(socket, message);
+            await sendMessage(socket, message);
         });
 
         socket.on('joinNotifRoom',async(user:any)=>{
-            joinNotificationRoom(socket, user);
+            await joinNotificationRoom(socket, user);
         })
 
         socket.on('sendNotification', async(patient:any)=>{
-            Notificationsocket(socket, patient);
+            await Notificationsocket(socket, patient);
         })
+
+        // socket.on('setCount', (userId:any)=>{
+        //     console.log("llllllll--------->   ", userId);
+        //     sendCount(userId, 0);
+        // })
         
         socket.on('disconnect', ()=>{
             console.log('Client disconnected');

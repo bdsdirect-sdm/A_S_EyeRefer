@@ -11,6 +11,8 @@ import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
 import bcrypt from 'bcrypt';
 import Notification from "../models/Notification";
+import PDFDocument from 'pdfkit';
+import { io } from "../socket/socket";
 
 const Security_Key:any = Local.SECRET_KEY;
 // const checkPassword = async() => {
@@ -882,8 +884,6 @@ export const deleteStaff = async(req:any, res:Response) => {
     }
 }
 
-
-// pending
 export const getNotifications = async(req:any, res:Response) => {
     try{
         const {uuid} = req.user;
@@ -900,7 +900,6 @@ export const getNotifications = async(req:any, res:Response) => {
     }
 }
 
-// pending
 export const updateNotificationStatus = async(req:any, res:Response) => {
     try{
         const {uuid} = req.user;
@@ -911,7 +910,68 @@ export const updateNotificationStatus = async(req:any, res:Response) => {
                 const notification = notifications[i];
                 await notification.update({is_seen:1});
             }
+
+            io.to(`room-${uuid}`).emit('getUnreadCount', 0);
         }
+    }
+    catch(err){
+        console.log(err);
+    }
+}
+
+export const downloadPatientData = async(req:any, res:any) => {
+    try{
+        const {patientId} = req.params;
+
+        const patientData:any = await Patient.findOne({ where: { uuid: patientId }, include:[
+            {
+                model: User,
+                as:'referbydoc'
+            }
+        ] });
+
+        if (!patientData) {
+            return res.status(404).json({ message: 'Patient not found' });
+        }
+
+        // const patientData = patient.toJSON();
+        const doc = new PDFDocument();
+        res.header('Content-Type', 'application/pdf');
+        res.attachment('patient_data.pdf');
+        doc.pipe(res);
+
+        doc.font('Helvetica-Bold').fontSize(16).text('Patient Information', { align: 'center' });
+        doc.moveDown();
+        
+        doc.font('Helvetica-Bold').fontSize(14).text('Basic Information', { align: 'left' });
+        doc.font('Helvetica').fontSize(11)
+        doc.text(`Name: ${patientData.firstname} ${patientData.lastname}`);
+        doc.text(`Phone: 1122334455`);
+        doc.text(`Email: ${patientData.email}`);
+        doc.text(`Gender: Male`, { paragraphGap: 20 });
+
+        doc.font('Helvetica-Bold').fontSize(14).text('Reason of Consult', { align: 'left' });
+        doc.font('Helvetica').fontSize(11)
+        doc.text(`Reason: ${patientData.disease || 'Not provided'}`);
+        doc.text(`Laterality: Not provided`);
+        doc.text(`Timing: Not provided`, { paragraphGap: 20 });
+
+        doc.font('Helvetica-Bold').fontSize(14).text('Referral MD', { align: 'left' });
+        doc.font('Helvetica').fontSize(11)
+        doc.text(`Referral MD: Hello`);
+        doc.text(`Location: Not provided`);
+        doc.text(`Notes: Not provided`, { paragraphGap: 20 });
+
+        doc.font('Helvetica-Bold').fontSize(14).text('Appointment Details', { align: 'left' });
+        doc.font('Helvetica').fontSize(11)
+        doc.text(`Appointment date/time: Heeelllooo`);
+        doc.text(`Surgical: Not provided`, { paragraphGap: 20 });
+
+        doc.font('Helvetica-Bold').fontSize(14).text('Notes', { align: 'left' });
+        doc.font('Helvetica').fontSize(11)
+        doc.text(`Notes: Not provided`, { paragraphGap: 20 });
+
+        doc.end();
     }
     catch(err){
         console.log(err);

@@ -1,19 +1,18 @@
 import { useQuery } from '@tanstack/react-query';
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import api from '../api/axiosInstance';
 import { Local } from '../environment/env';
 
-
-
 const Notification:React.FC = () => {
   const navigate = useNavigate()
   const token = localStorage.getItem('token');
-
+  const [userId, setUserId] = useState<null | string>(null)
+  
   async function setNotificationSeen(){
     try{
-      await api.put(`${Local.NOTIFICATION_SEEN}`, {}, {
+      await api.put(`${Local.NOTIFICATION_SEEN}`, {"is_seen":1}, {
         headers: {
           'Authorization': `Bearer ${token}`
           }
@@ -23,17 +22,15 @@ const Notification:React.FC = () => {
       console.log(err);
     }
   }
-  
+
   useEffect(()=>{
     if(!token){
       navigate('/login');
     }
-
     return ()=>{
       setNotificationSeen();
-      window.location.reload();
     }
-  },[])
+  },[]);
 
   const getNotifications = async() => {
     try{
@@ -48,13 +45,19 @@ const Notification:React.FC = () => {
       toast.error(err.response.data.message);
     }
   }
-
+  
   const {data, isLoading, isError, error} = useQuery({
     queryKey:['notification'],
-    queryFn: getNotifications
-  })
+    queryFn: getNotifications,
+  });
 
-  console.log(data);
+  useEffect(()=>{
+    if(data && data.length>0){
+      setUserId(data[0]['notifyto']);
+    }
+  }, [data]);
+
+  console.log(userId);
 
   if(isLoading){
     return (
@@ -82,10 +85,10 @@ const Notification:React.FC = () => {
       <h5 className='m-4' >Notifications</h5>
 
       <div className='bg-white ms-4 pt-5 pb-3' >
-        {data.map((notif:any)=>(
+        {data.map((notif:any, index:number) => (
           <>
             {notif.is_seen==0 && (
-              <div className='px-5'>
+              <div className='px-5' key={index} >
                 <p className='mb-0'>{notif.notification}</p>
                 <span className='me-2' style={{fontSize:'12px'}} >Received 3 weeks ago</span>
                 {/* <span className='me-2' style={{fontSize:'12px'}} >{(notif.createdAt).split('T')[0]}</span>
@@ -95,7 +98,7 @@ const Notification:React.FC = () => {
             )}
 
             {notif.is_seen==1 && (
-              <div className='px-5'>
+              <div className='px-5' key={index}>
                 <p className='mb-0 text-secondary'>{notif.notification}</p>
                 <span className='me-2 text-secondary' style={{fontSize:'12px'}} >Received 3 weeks ago</span>
                 {/* <span className='me-2' style={{fontSize:'12px'}} >{(notif.createdAt).split('T')[0]}</span>

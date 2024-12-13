@@ -5,7 +5,8 @@ import { registerUser, loginUser, verifyUser, getUser, getDocList,
     updateAppointment, deleteAddress, getAppointmentList, 
     getAppointment, forgetPasswordOTP, updateforgetedPassword,
     getRooms, getStaffList, addStaff, deleteStaff, getNotifications,
-    updateNotificationStatus } from "../controllers/userController";
+    updateNotificationStatus, 
+    downloadPatientData} from "../controllers/userController";
 import userAuthMiddleware from "../middlewares/userAuth";
 import signupValidation from "../middlewares/formValidation.ts/signupValidation";
 import loginValidation from "../middlewares/formValidation.ts/loginValidation";
@@ -28,6 +29,7 @@ router.get('/view-patient/:patientId', userAuthMiddleware, getPatient);
 router.put('/update-patient/:patientId', userAuthMiddleware, updatePatient);
 router.delete('/delete-patient/:patientId', userAuthMiddleware, deletePatient);
 router.get('/patient-list', userAuthMiddleware, getPatientList);
+router.get('/download-patient/:patientId', userAuthMiddleware, downloadPatientData);
 
 // Appointment API's
 router.get('/appointment-list', userAuthMiddleware, getAppointmentList);

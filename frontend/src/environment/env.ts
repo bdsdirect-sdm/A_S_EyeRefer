@@ -25,7 +25,8 @@ interface config{
     ADD_STAFF: string;
     DELETE_STAFF: string;
     GET_NOTIFICATION_LIST: string;
-    NOTIFICATION_SEEN: string
+    NOTIFICATION_SEEN: string;
+    DOWNLOAD_PATIENT: string;
 }
 
 export const Local:config = {
@@ -50,6 +51,7 @@ export const Local:config = {
     EDIT_PATIENT: import.meta.env.VITE_EDIT_PATIENT,
     DELETE_PATIENT: import.meta.env.VITE_DELETE_PATIENT,
     GET_PATIENT_LIST: import.meta.env.VITE_GET_PATIENT_LIST,
+    DOWNLOAD_PATIENT: import.meta.env.VITE_DOWNLOAD_PATIENT,
     
 
     ADD_APPOINTMENT: import.meta.env.VITE_ADD_APPOINTMENT,

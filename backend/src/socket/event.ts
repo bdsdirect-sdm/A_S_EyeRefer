@@ -128,7 +128,7 @@ export const Notificationsocket = async(socket:any, patient:any) => {
     }
 }
 
-const sendCount = (user:any, count:any) =>{
+export const sendCount = (user:any, count:any) =>{
     try{
         io.to(`room-${user}`).emit('getUnreadCount', count);
     }
