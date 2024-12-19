@@ -21,7 +21,7 @@ app.use(express.json());
 app.use("/", userRouter);
 
 
-sequelize.sync().then(()=>{
+sequelize.sync({force:false}).then(()=>{
     console.log('Database connected');
     
     httpServer.listen(Local.SERVER_PORT,  () => {

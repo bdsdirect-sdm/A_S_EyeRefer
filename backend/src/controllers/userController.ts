@@ -227,6 +227,10 @@ export const getDocList = async(req:any, res:Response) => {
 export const getPatientList = async(req:any, res:Response) => {
     try{
         const {uuid} = req.user;
+        const sortby =  req.query.sortBy
+        const sortin = req.query.sortIn
+        // console.log(sortby);
+        // console.log(sortin); 
         const user = await User.findOne({where:{uuid:uuid}});
         var plist: any[] = [];
 
@@ -272,7 +276,8 @@ export const getPatientList = async(req:any, res:Response) => {
                         }
                     ],
                     limit:limit,
-                    offset:offset
+                    offset:offset,
+                    order: [[sortby, sortin]]
                 });
 
                 if(patientList){
@@ -335,7 +340,7 @@ export const getPatientList = async(req:any, res:Response) => {
                     as: "patientId"
                 }
         ]
-        });
+    });
 
         let patientList = plist.filter((item)=>{
             if(!item.patientId){

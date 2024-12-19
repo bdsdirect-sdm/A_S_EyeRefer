@@ -135,8 +135,7 @@ const  App:react.FC = () => {
   return (
 <>
 <RouterProvider router={router} />
-<ToastContainer newestOnTop={false}
-closeOnClick />
+<ToastContainer newestOnTop={false} closeOnClick />
 </>
   )
 }

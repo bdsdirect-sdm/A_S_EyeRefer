@@ -5,8 +5,7 @@ import { registerUser, loginUser, verifyUser, getUser, getDocList,
     updateAppointment, deleteAddress, getAppointmentList, 
     getAppointment, forgetPasswordOTP, updateforgetedPassword,
     getRooms, getStaffList, addStaff, deleteStaff, getNotifications,
-    updateNotificationStatus, 
-    downloadPatientData} from "../controllers/userController";
+    updateNotificationStatus, downloadPatientData} from "../controllers/userController";
 import userAuthMiddleware from "../middlewares/userAuth";
 import signupValidation from "../middlewares/formValidation.ts/signupValidation";
 import loginValidation from "../middlewares/formValidation.ts/loginValidation";
