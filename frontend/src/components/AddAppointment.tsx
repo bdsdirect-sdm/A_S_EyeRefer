@@ -138,7 +138,7 @@ const AddAppointment:React.FC = () => {
 
                   <div className="form-group col">
                     <label>Appointment Date</label>
-                    <Field type="date" name="appointmentdate" className="form-control"/>
+                    <Field type="date" name="appointmentdate" onFocus={(e:any) => e.target.showPicker?.()} className="form-control"/>
                     <ErrorMessage name="appointmentdate" component="div" className="text-danger"/>
                   </div>
                   

@@ -148,7 +148,7 @@ const UpdateProfile:React.FC = () => {
 
           <div className="form-group">
             <label>Date of Birth:</label>
-            <Field type="date" name="dob" className="form-control" />
+            <Field type="date" name="dob" onFocus={(e:any) => e.target.showPicker?.()} className="form-control" />
             <ErrorMessage name="dob" component="div" className="text-danger" />
           </div>
 

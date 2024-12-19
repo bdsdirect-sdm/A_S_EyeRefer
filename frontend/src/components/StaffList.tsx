@@ -12,6 +12,8 @@ const StaffList:React.FC = () => {
   const [page, setPage] = useState<number>(1);
   const [search, setSearch] = useState('');
   const [Input, setInput] = useState('');
+  const [SortBy, setSortBy] = useState('CreatedAt');
+  const [SortIn, setSortIn] = useState('DESC');
   let totalPages;
 
   useEffect(()=>{
@@ -21,11 +23,15 @@ const StaffList:React.FC = () => {
   },[])
 
 
-  const getStaffs = async(page:any, search:any) => {
+  const getStaffs = async(page:any, search:any, sortBy:any, sortIn:any) => {
     try{
       const response = await api.get(`${Local.GET_STAFF_LIST}?page=${page}&limit=10&find=${search}`, {
         headers: {
           Authorization: `Bearer ${token}`
+        },
+        params:{
+          sortBy: sortBy,
+          sortIn: sortIn
         }
       });
       return response.data;
@@ -36,8 +42,8 @@ const StaffList:React.FC = () => {
   }
 
   const {data: staff, error, isLoading, isError } = useQuery({
-    queryKey: ['staff', page, search],
-    queryFn: ()=> getStaffs(page, search)
+    queryKey: ['staff', page, search, SortBy, SortIn],
+    queryFn: ()=> getStaffs(page, search, SortBy, SortIn),
   });
 
   const deleteStaff = async(staff_uuid:any) =>{
@@ -101,13 +107,31 @@ const StaffList:React.FC = () => {
         <button type='button' className='btn btn-primary ms-auto me-4 mt-3 p-2 px-5 ' onClick={()=>{navigate('/add-staff')}} >Add Staff</button>
       </div>
     <table className="table">
-  <thead>
-    <tr>
-      <th scope="col"> Name </th>
-      <th scope="col"> email </th>
-      <th scope="col"> Gender </th>
-      <th scope="col"> Contact </th>
-      <th scope="col"> Action </th>
+  <thead >
+    <tr className='table-secondary'>
+      <th scope="col">
+      <div className='flex ms-5 pe-0 ps-5 ' >
+          <p className='pt-2 pe-0 '> Name </p> 
+          <div className='pt-2 ps-1' onClick={()=>{
+            setSortBy('firstname');
+            setSortIn(SortIn === 'ASC' ? 'DESC' : 'ASC');
+            }} >
+              {(SortIn ==='DESC' && SortBy==='createdAt')?(
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-caret-up-fill" viewBox="0 0 16 16">
+                  <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
+                </svg>
+                ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                  <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+                </svg>
+            )}
+          </div>
+        </div>
+      </th>
+      <th scope="col"> <p>email</p> </th>
+      <th scope="col"> <p>Gender</p> </th>
+      <th scope="col"> <p>Contact</p> </th>
+      <th scope="col"> <p>Action</p> </th>
     </tr>
   </thead>
   <tbody>

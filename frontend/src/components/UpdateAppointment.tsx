@@ -126,7 +126,7 @@ const UpdateAppointment:React.FC = () => {
 
                 <div className="form-group col">
                   <label>Appointment Date</label>
-                  <Field type="date" name="date" className="form-control"/>
+                  <Field type="date" name="date" onFocus={(e:any) => e.target.showPicker?.()} className="form-control"/>
                   <ErrorMessage name="date" component="div" className="text-danger"/>
                 </div>
                 

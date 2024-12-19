@@ -130,6 +130,8 @@ export const getUser = async (req:any, res:Response) => {
 export const getDocList = async(req:any, res:Response) => { 
     try{
         const {uuid} = req.user;
+        const sortby =  req.query.sortBy
+        const sortin = req.query.sortIn
         const user = await User.findOne({where:{uuid:uuid}});
         
         if(req.query.page){
@@ -181,7 +183,8 @@ export const getDocList = async(req:any, res:Response) => {
                         }, 
                     limit:limit, 
                     offset:offset,
-                    include: Address
+                    include: Address,
+                    order: [[sortby, sortin]]
                 });
             }
             let docCount = docList.count
@@ -229,8 +232,6 @@ export const getPatientList = async(req:any, res:Response) => {
         const {uuid} = req.user;
         const sortby =  req.query.sortBy
         const sortin = req.query.sortIn
-        // console.log(sortby);
-        // console.log(sortin); 
         const user = await User.findOne({where:{uuid:uuid}});
         var plist: any[] = [];
 
@@ -821,6 +822,8 @@ export const getStaffList = async(req:any, res:Response) => {
         const page = parseInt(req.query.page);
         const limit = parseInt(req.query.limit);
         const search = req.query.find;
+        const sortby =  req.query.sortBy
+        const sortin = req.query.sortIn
         const offset = limit*(page-1)
         
         const user = await User.findByPk(uuid);
@@ -839,6 +842,7 @@ export const getStaffList = async(req:any, res:Response) => {
                 },
                 limit,
                 offset,
+                order: [[sortby, sortin]]
               });
 
             const totalStaff = await Staff.count({where:{user_id:uuid}});

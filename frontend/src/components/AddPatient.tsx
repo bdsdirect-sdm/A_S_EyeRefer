@@ -309,13 +309,13 @@ const AddPatient: React.FC = () => {
 
                   <div className="form-group w-25 col">
                     <label>Policy Start Date</label>
-                    <Field type='date' name='starting_date' className='form-control' />
+                    <Field type='date' name='starting_date' onFocus={(e:any) => e.target.showPicker?.()} className='form-control' />
                     <ErrorMessage name="starting_date" component="div" className="text-danger" />
                   </div>
                   
                   <div className="form-group w-25 col">
                     <label>Policy Expiry Date</label>
-                    <Field type='date' name='expiry_date' className='form-control' />
+                    <Field type='date' name='expiry_date' onFocus={(e:any) => e.target.showPicker?.()} className='form-control' />
                     <ErrorMessage name="expiry_date" component="div" className="text-danger" />
                   </div>
 
