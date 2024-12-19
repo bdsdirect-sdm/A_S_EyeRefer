@@ -7,6 +7,9 @@ import { toast } from 'react-toastify';
 import api from '../api/axiosInstance';
 import * as Yup from 'yup';
 import socket from '../socket/socketConn';
+// import { Calendar } from 'primereact/calendar';
+import 'primeflex/primeflex.css';
+
 
 const AddPatient: React.FC = () => {
   const navigate = useNavigate();
@@ -86,7 +89,7 @@ const AddPatient: React.FC = () => {
       "referedto": values.referedto,
       'address': values.address
     }
-    // console.log(data);
+    console.log("------------>", values);
     patientMutate.mutate(data);
   };
 
@@ -124,7 +127,7 @@ const AddPatient: React.FC = () => {
           referedto: '',
           gender: '',
           address: '',
-          dob: '',
+          dob: null,
           email: '',
           phone: '',
           referback: 0
@@ -142,7 +145,8 @@ const AddPatient: React.FC = () => {
                 <div className='d-flex justify-content-around py-4' >
                   <div className='w-25' >
                     <label htmlFor="dob">Date of Birth</label>
-                    <Field name='dob' type='date' placeholder='Enter DOB' className='form-control' />
+                    <Field name='dob' type='date' placeholder='Enter DOB' onFocus={(e:any) => e.target.showPicker?.()} className='form-control' />
+                    {/* <Calendar className='border border-1 border-black' id="icon" value={values.dob} onChange={(e:any)=>{setFieldValue('dob',e.target.value )}} showIcon /> */}
                     <ErrorMessage name='dob' component='div' className='text-danger' />
                   </div>
 

@@ -92,7 +92,7 @@ const Profile: React.FC = () => {
 
         <div className='row mb-3'>
           <div className='d-flex col-10'>
-            <img src="https://via.placeholder.com/40" alt="User Profile"
+            <img src={`https://api.dicebear.com/5.x/initials/svg?seed=${User.user.firstname} ${User.user.lastname}`} alt="User Profile"
             className="rounded-circle me-2" height="80" width="80" />
 
             <div className='ms-3'>

@@ -12,6 +12,8 @@ const Dashboard:React.FC = () => {
     const navigate = useNavigate()
     const token = localStorage.getItem("token");
     const [page, setPage] = useState<number>(1);
+    const [SortBy, setSortBy] = useState('CreatedAt');
+    const [SortIn, setSortIn] = useState('DESC');
     const search = '';
     let totalPages:any;
     
@@ -50,24 +52,30 @@ const Dashboard:React.FC = () => {
         queryFn: getUser
     });
 
-    const fetchPatient = async(pageno:any, search:any) => {
+    const fetchPatient = async(pageno:any, search:any, SortBy:any, SortIn:any) => {
         try{
+          console.log("sortby", SortBy);
+          console.log("sortin", SortIn);
           const response = await api.get(`${Local.GET_PATIENT_LIST}?page=${pageno}&limit=10&find=${search}`, {
             headers:{
               Authorization: `Bearer ${token}`
+            },
+            params:{
+              sortBy: SortBy,
+              sortIn: SortIn
             }
           })
           // console.log("Listing------------------------------------------------>", response.data)
           return response.data;
         }
-        catch(err:any){
-          console.log(err.response.data.message);
+        catch(err){
+            console.log(err);
         }
       }
     
       const { data: patientList, error:patientError, isLoading:patientloading, isError:ispatientError } = useQuery({
-        queryKey: ['patient', page, search],
-        queryFn: ()=>fetchPatient(page, search)
+        queryKey: ['patient', page, search, SortBy, SortIn],
+    queryFn: ()=>fetchPatient(page, search, SortBy, SortIn)
       });
 
       const directChat = (patient:any, user1:any, user2:any, user:any, firstname:any, lastname:any) => {
@@ -186,21 +194,97 @@ const Dashboard:React.FC = () => {
             
             <div>
                 <table className="table table-hover mt-4 me-3">
-                    <thead >
+
+                <thead >
                         <tr className='table-head table-secondary ' >
-                        <th scope="col"> Patient Name </th>
-                        <th scope="col"> DOB </th>
-                        <th scope="col"> Disease </th>
-                        <th scope="col"> Date Sent </th>
+                        <th scope="col">
+                          <div className='flex' >
+                            <p className='pt-2'> Patient </p> 
+                            <div className='pt-2 ps-1' onClick={()=>{
+                              setSortBy('firstname');
+                              setSortIn(SortIn === 'ASC' ? 'DESC' : 'ASC');
+                            }} >
+
+                              {(SortIn ==='DESC' && SortBy==='firstname')?(
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-caret-up-fill" viewBox="0 0 16 16">
+                                  <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
+                                </svg>
+                              ) : (
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                                  <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+                                </svg>
+                              )}
+                            </div>
+                          </div>
+                        </th>
+                        <th scope="col">
+                          <p>
+                            DOB
+                          </p>
+                        </th>
+                        <th scope="col"> <p>Disease</p> </th>
+                        <th scope="col">
+                        <div className='flex' >
+                            <p className='pt-2 pe-0 '> Date Sent </p> 
+                            <div className='pt-2 ps-1' onClick={()=>{
+                              setSortBy('createdAt');
+                              setSortIn(SortIn === 'ASC' ? 'DESC' : 'ASC');
+                            }} >
+                              {(SortIn ==='DESC' && SortBy==='createdAt')?(
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-caret-up-fill" viewBox="0 0 16 16">
+                                  <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
+                                </svg>
+                              ) : (
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                                  <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+                                </svg>
+                              )}
+                            </div>
+                          </div>
+                        </th>
                         <th scope="col"> Appointment Date </th>
-                        <th scope="col"> Refered to </th>
-                        <th scope="col"> Status </th>
-                        <th scope="col"> Consult Note </th>
+                        <th scope="col">
+                        <div className='flex' >
+                            <p className='pt-2 pe-0 '> Refered to </p> 
+                            {/* <div className='pt-2 ps-1' onClick={()=>{}} >
+                            {(SortIn ==='DESC' && SortBy==='referto')?(
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-caret-up-fill" viewBox="0 0 16 16">
+                                  <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
+                                </svg>
+                              ) : (
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                                  <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+                                </svg>
+                              )}
+                            </div> */}
+                          </div>
+                        </th>
+                        <th scope="col">
+                        <div className='flex' >
+                            <p className='pt-2 pe-0 '> Status </p> 
+                            <div className='pt-2 ps-1' onClick={()=>{
+                              setSortBy('referalstatus');
+                              setSortIn(SortIn === 'ASC' ? 'DESC' : 'ASC');
+                            }} >
+                              {(SortIn ==='DESC' && SortBy==='referalstatus')?(
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-caret-up-fill" viewBox="0 0 16 16">
+                                  <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
+                                </svg>
+                              ) : (
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                                  <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+                                </svg>
+                              )}
+                            </div>
+                          </div>
+                        </th>
+                        <th scope="col"> <p>Consult Note</p> </th>
                         <th scope="col"> Ready to Return </th>
                         <th scope="col"> Direct Message </th>
-                        <th scope="col"> Action </th>
+                        <th scope="col"> <p>Action</p> </th>
                         </tr>
                     </thead>
+
                     <tbody>
                         {patientList.patientList.map((patient:any)=>(
                             <>

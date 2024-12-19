@@ -87,7 +87,7 @@ const Navbar:React.FC = () => {
         </div>
         <div className="d-flex align-items-center position-relative" onClick={toggleDropdown}>
           <img
-            src="https://via.placeholder.com/40" // Replace with correct image source
+            src={`https://api.dicebear.com/5.x/initials/svg?seed=${firstname} ${lastname}`} // Replace with correct image source
             alt="User Profile"
             className="rounded-circle me-2"
             height="40"
